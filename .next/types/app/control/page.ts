@@ -1,4 +1,4 @@
-// File: /Users/kchan27/Library/CloudStorage/OneDrive-azureford/Documents/projects/peerJS/nextjs-server-client/nextjs-peerjs/src/app/control/page.jsx
+// File: /Users/kenchan/Documents/projects/peerJS/next-peer-multi/src/app/control/page.jsx
 import * as entry from '../../../../src/app/control/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
