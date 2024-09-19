@@ -1,8 +1,8 @@
 import Peer from "peerjs";
 
 export default function PeerConfig(id) {
-    const p = new Peer(id);
-    /*const p = new Peer(id, {
+    //const p = new Peer(id);
+    const p = new Peer(id, {
         config: {
             iceServers: [
                 {
@@ -30,7 +30,7 @@ export default function PeerConfig(id) {
                 },
             ],
         }
-    });*/
+    });
 
     return p;
 }
