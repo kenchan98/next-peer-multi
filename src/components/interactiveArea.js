@@ -2,15 +2,20 @@ import React, { useEffect, useState, useRef } from 'react';
 import Slots from "./slots";
 import useSound from 'use-sound';
 import Keyboard from "@/components/keyboard";
+import Celebration from "@/components/celebration";
+import { useContent } from '@/hooks/useContent';
 //
 //
-export default function InteractiveArea({ data, puzzleDone, setPuzzleDone }) {
-    //const [puzzleDone, setPuzzleDone] = useState(false);
+export default function InteractiveArea({ data }) {
     const [hasEmptySlot, setHasEmptySlot] = useState(true);
     const [valueInSlots, setValueInSlots] = useState([]);
     const [animateResultInSlots, setAnimateResultInSlots] = useState('')
+    const [showConfetti, setShowConfetti] = useState(false)
     const [sound_gotIt] = useSound('/assets/cheers4.mp3');
     const [sound_wrong] = useSound('/assets/wrong2.mp3');
+    //
+    //
+    const { puzzleAnswered, setPuzzleAnswered } = useContent();
     //
     // we need a ref to the keyboard as we call on its function, 
     // keyboardFunc refer to 'setKeyActiveStatus' and its set in
@@ -24,8 +29,11 @@ export default function InteractiveArea({ data, puzzleDone, setPuzzleDone }) {
             slots.push({ id: i, keyId: "", value: "" })
         }
         setValueInSlots(slots);
-        // reset from previous puzzle so that interaction is active on the board
-        setPuzzleDone(false)
+        // reset from previous puzzle so that 
+        // interaction is active on the board
+        setPuzzleAnswered(false);
+        //
+        setShowConfetti(false);
     }, [data])
     //
     //
@@ -59,9 +67,12 @@ export default function InteractiveArea({ data, puzzleDone, setPuzzleDone }) {
         if (userAnswer === correctAnswer) {
             //console.log("CORRECT")
             sound_gotIt();
+            setShowConfetti(true)
             let value = 'bg-green-500 shadow-[0px_-10px_35px_10px_rgba(34,197,94,1)] '
             setAnimateResultInSlots(value)
-            setPuzzleDone(true)
+            // inform the puzzle is correctly answered, 
+            // useEffect of puzzleAnswered in client.js 
+            setPuzzleAnswered(true);
         } else {
             //console.log("OH NO")
             sound_wrong();
@@ -106,7 +117,8 @@ export default function InteractiveArea({ data, puzzleDone, setPuzzleDone }) {
     //
     return (
         <>
-            <Slots valueInSlots={valueInSlots} resetValueInSlot={resetValueInSlot} animateResultInSlots={animateResultInSlots} puzzleDone={puzzleDone} />
+            <Celebration showConfetti={showConfetti} />
+            <Slots valueInSlots={valueInSlots} resetValueInSlot={resetValueInSlot} animateResultInSlots={animateResultInSlots} />
             <Keyboard ref={keyboardRef} keyboard={data.keyboard} addKeyStrokeInSlots={addKeyStrokeInSlots} hasEmptySlot={hasEmptySlot} />
         </>
     )

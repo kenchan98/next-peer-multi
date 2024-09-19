@@ -4,20 +4,21 @@ import React, { useEffect, useState, useCallback } from 'react';
 import PeerConfig from '@/components/peerConfig';
 import DataList from "@/app/data";
 import GameStage from './gameStage';
-import Users from '@/components/users';
-import Button from '@/components/button'
+import Clients from '@/components/clients';
+import Button from '@/components/button';
+import Background from '@/components/background';
+import Leaderboard from '@/components/leaderboard';
 import { getServerVariable } from '@/lib/store';
-import { useContent } from '@/hooks/useContent'
+import { useContent } from '@/hooks/useContent';
 import Image from 'next/image';
 
 const Server = () => {
-    //const [peerId, setPeerId] = useState('');
     const [connections, setConnections] = useState({});
-    const [usersList, setUsersList] = useState([]);
-    const [messages, setMessages] = useState([]);
+    const [clientsList, setClientsList] = useState([]);
     const [isConnected, setIsConnected] = useState('')
     const [serverID, setServerID] = useState();
     const [connectBtnPressed, setConnectBtnPressed] = useState(false)
+    const [userResults, setUserResults] = useState([])
     //
     //
     const [picIndex, setPicIndex] = useState(0);
@@ -29,49 +30,78 @@ const Server = () => {
     let pingIndex = 0;
     //
     useEffect(() => {
+        // get the serverID from store first
         const serverValue = getServerVariable();
-        setServerID(serverValue)
-        /*setTimeout(() => {
-            initialiseServer();
-        }, 300)*/
+        setServerID(serverValue);
     }, []);
-
     useEffect(() => {
-        console.log(usersList)
-    }, [usersList]);
+        // automatically connect to server after 2 secs
+        const timeout = setTimeout(() => {
+            initialiseServer();
+        }, 2000);
 
+        return () => clearTimeout(timeout);
+    }, [serverID])
+    //
+    //
     useEffect(() => {
-        //console.log("connection changed!!")
-        // start binging to all clients
+        console.log(clientsList)
+    }, [clientsList]);
+    //
+    //
+    useEffect(() => {
+        // start pinging to all clients
         clearInterval(pingInterval)
         pingInterval = setInterval(() => {
-            pingAllUsers(connections)
+            pingAllClients(connections)
         }, 1000);
 
         return () => {
             clearInterval(pingInterval)
         }
-    }, [connections])
-
+    }, [connections, picIndex, screenIndex, timeUp])
+    //
+    //
     useEffect(() => {
-        //console.log("picIndex :" + picIndex)
-        updateAllUsers({ type: 'updatePicIndex', picIndex: picIndex });
-        setTimeUp(false)
+        updateAllClients({ type: 'from-ser-picIndex', picIndex: picIndex });
+        setTimeUp(false);
+        resetAnsweredInClientsList();
     }, [picIndex])
-
+    //
+    //
     useEffect(() => {
-        console.log('timeup :', timeUp)
-        updateAllUsers({ type: 'updateTimeUp', timeUp: timeUp })
-    }, [timeUp])
-
+        updateAllClients({ type: 'from-ser-timeUp', timeUp: timeUp });
+    }, [timeUp]);
+    //
+    //
     useEffect(() => {
         console.log('screenIndex : ', screenIndex)
         if (screenIndex === 2) {
-            updateAllUsers({ type: 'gameStart', value: true })
+            updateAllClients({ type: 'from-ser-gameStart', value: true })
         }
-    }, [screenIndex])
+    }, [screenIndex]);
+    //
+    //
+    useEffect(() => {
+        console.log(userResults)
+        const list = [...clientsList];
+        list.map((client) => {
+            if (client.id === userResults.id) {
+                client.answered = true;
+                client.results.push(userResults)
+            }
+        })
+        setClientsList(list)
+    }, [userResults])
+    /*
+    //
+    //
+    //
+    //
+    */
     const initialiseServer = () => {
         setConnectBtnPressed(true);
+        console.log(serverID)
         // open a connection session with id:"hcd-test"
         const peer = new PeerConfig(serverID);
 
@@ -86,12 +116,10 @@ const Server = () => {
             console.log('New client connected:', conn.peer);
 
             conn.on('open', () => {
-                // put all newly joined users into the usersList except the remote control (controller)
+                // put all newly joined users into the clientsList except the remote control (controller)
                 if (conn.peer !== 'controller') {
                     // Add new client to the list
-                    setUsersList(prevList => {
-                        console.log('>>>>>> : ', conn.peer)
-
+                    setClientsList(prevList => {
                         const newList = [...prevList, { id: conn.peer, results: [] }];
                         // Broadcast updated list to all clients, including the new one
                         //broadcastClientList(newList, { ...connections, [conn.peer]: conn });
@@ -104,51 +132,29 @@ const Server = () => {
                 setConnections(prevConnections => ({ ...prevConnections, [conn.peer]: conn }));
             });
 
+            // RECEIVE FROM CONTROLLER / CLIENTS
             conn.on('data', (data) => {
-                //console.log('Received data:', data);
-                const newMessage = { userId: conn.peer, message: data.message };
-                setMessages(prev => [...prev, newMessage]);
-                //broadcastMessage(newMessage);
+                console.log('Received data:', data);
                 //
                 //
                 switch (data.type) {
-                    case "pinging":
-                        // this pulsating signal is for all users to
-                        // check every second if the server is alive 
-                        pingAllUsers();
+                    case "from-con-screenIndex":
+                        setScreenIndex(data.value);
                         break;
-                    case "updatePicIndex":
+                    case "from-con-picIndex":
                         setPicIndex(data.value)
-                        //
-                        //
-                        // WHY NOT WORKING?
-                        /*let num = picIndex
-                        if (data.value === 'prev') {
-                            if (picIndex > 0) {
-                                num -= 1
-                            }
-                        } else if (data.value === 'next') {
-                            if (picIndex < 14) {
-                                num += 1
-                            }
-                        }
-                        setPicIndex(num)*/
                         break;
-                    case "puzzleDone":
-                        console.log(conn.peer, data)
+                    case "from-cli-puzzleAnswered":
+                        const user = { id: conn.peer, data: data.data }
+                        setUserResults(user)
                         break;
-                    /*case "timeUp":
-                        console.log(conn.peer, data)
-                        break;*/
                 }
             });
 
             conn.on('close', () => {
                 // Remove client from the list when disconnected
-                setUsersList(prevList => {
+                setClientsList(prevList => {
                     const newList = prevList.filter(user => user.id !== conn.peer);
-                    // Broadcast updated list to all remaining clients
-                    //broadcastClientList(newList, connections);
                     return newList;
                 });
 
@@ -161,55 +167,46 @@ const Server = () => {
         });
     }
 
-    const pingAllUsers = (connections) => {
+    const pingAllClients = (connections) => {
         pingIndex++;
         Object.values(connections).forEach(conn => {
-            conn.send({ type: 'pinging', data: { pingIndex: pingIndex, picIndex: picIndex } });
+            conn.send({ type: 'from-ser-pinging', data: { pingIndex: pingIndex, screenIndex: screenIndex, picIndex: picIndex, timeUp: timeUp } });
         });
     }
 
-    const updateAllUsers = (data) => {
-        console.log(connections)
+    const updateAllClients = (data) => {
+        //console.log(connections)
         Object.values(connections).forEach(conn => {
             conn.send(data);
         });
     }
 
+    const resetAnsweredInClientsList = () => {
+        const list = [...clientsList];
+        list.map(client => {
+            if (client.answered) delete client.answered
+        });
+        setClientsList(list)
+    }
+
+
     return (
         <div className="flex flex-col content-center items-center">
+            <Background />
+            <Button value="screenIndex : 3" func={() => { setScreenIndex(3) }} />
             <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Server</h1>
             <div className='connection-indicator '><span className={`connection-indicator-dot ${isConnected ? 'connected' : ''} `}></span></div>
-            {
-
+            {/*
                 <p>Connected Clients: {Object.keys(connections).length}</p>
-                /*<h2>Client List</h2>
-                    <ul>
-                        {clientList.map(client => (
-                            <li key={client.id}>
-                                {client.id} - {client.isConnected ? 'Connected' : 'Disconnected'}
-                                {client.disabled ? ' (Disabled)' : ''}
-                            </li>
-                        ))}
-                    </ul>
-                    <h2>Messages</h2>
-                    <ul>
-                        {messages.map((msg, index) => (
-                            <li key={index}>
-                                {msg.clientId}: {msg.message}
-                            </li>
-                        ))
-                    </ul>
-                <button onClick={() => {
-                    setPicIndex(picIndex + 1)
-                }}>++ PRESS ME ++</button>*/
-            }
-            <Users usersList={usersList} />
+            */}
+            <Clients clientsList={clientsList} />
             {
                 //(!connectBtnPressed && !isConnected) ? <Button value="Connect Server" func={initialiseServer} /> : <GameStage data={DataList[picIndex]} />
                 (!connectBtnPressed && !isConnected && <Button value="Connect Server" func={initialiseServer} />) ||
                 (screenIndex === 0 && (<div className="flex flex-col justify-center content-center"><Image className=" m-16 rounded-lg" src="/assets/qrCode.png" alt="QR CODE" width="300" height="300" /><Button value="Next" func={() => { setScreenIndex(1) }} /></div>)) ||
                 (screenIndex === 1 && (<div className="flex flex-col justify-center content-center"><div className="h-36 m-12 text-3xl font-extrabold">INSTRUCTION</div><Button value="Next" func={() => { setScreenIndex(2) }} /></div>)) ||
-                (screenIndex === 2 && <GameStage data={DataList[picIndex]} />)
+                (screenIndex === 2 && <GameStage data={DataList[picIndex]} />) ||
+                (screenIndex === 3 && <Leaderboard data={DataList} clientsList={clientsList} />)
             }
         </div>
     );

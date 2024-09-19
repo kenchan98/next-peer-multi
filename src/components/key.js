@@ -7,7 +7,7 @@ export default function Key({ id, value, isActive, keyboardActivated, addKeyStro
     const [sound_click] = useSound('/assets/click.mp3');
 
     return (
-        <div className={`aspect-square w-full flex items-center justify-center text-white font-bold rounded-lg bg-teal-950 ${isActive ? '' : 'key-inactive'}`}
+        <div className={`aspect-square w-full flex items-center justify-center text-white text-4xl font-bold rounded-lg bg-teal-950 ${isActive ? '' : 'key-inactive'}`}
             onClick={() => {
                 if (keyboardActivated && isActive) {
                     sound_click();

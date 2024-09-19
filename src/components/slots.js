@@ -1,11 +1,14 @@
 'use client';
 
 import useSound from 'use-sound';
-
-export default function Slots({ valueInSlots, resetValueInSlot, animateResultInSlots, puzzleDone }) {
+import { useContent } from '@/hooks/useContent';
+import { useEffect } from 'react';
+export default function Slots({ valueInSlots, resetValueInSlot, animateResultInSlots }) {
 
     const [sound_click_r] = useSound('/assets/click_reverse.mp3');
-
+    const { puzzleAnswered } = useContent();
+    //
+    //
     return (
         //flex flex-row gap-2 m-4 p-2
         //grid grid-cols-5 gap-4 place-items-center mt-4
@@ -13,7 +16,7 @@ export default function Slots({ valueInSlots, resetValueInSlot, animateResultInS
             {
                 valueInSlots.map((slot, i) => {
                     return <div className="slot aspect-square text-black" key={i} onClick={() => {
-                        if (!puzzleDone && slot.value !== "") {
+                        if (!puzzleAnswered && slot.value !== "") {
                             resetValueInSlot(slot);
                             sound_click_r();
                         }
