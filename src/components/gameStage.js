@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Slots from './slots';
+import SlotsStage from './slotsStage';
 import Timer from './timer';
 
 const GameStage = ({ data }) => {
@@ -10,15 +10,16 @@ const GameStage = ({ data }) => {
     const [fadeIn, setFadeIn] = useState('')
     useEffect(() => {
         console.log(data)
-        //
+        // populate the letters and its slots
+        // answer is hidden to start with 
         let slots = []
         for (let i = 0; i < data.ans.length; i++) {
-            slots.push({ id: i, keyId: "", value: "" })
+            slots.push({ id: i, keyId: "", value: data.ans[i] })
         }
         setValueInSlots(slots)
-        //
+        // fade in the whole content
         setFadeIn('animate-fadeIn');
-        setTimeout(() => { setFadeIn('') }, 500)
+        setTimeout(() => { setFadeIn('') }, 500);
     }, [data]);
     //
     //
@@ -26,7 +27,7 @@ const GameStage = ({ data }) => {
         <div className={`flex flex-col content-center items-center max-w-lg ${fadeIn}`}>
             <Timer />
             <Image className="w-5/6 m-4 rounded-lg" src={`/assets/` + data.img} alt={data.img} width={0} height={0} sizes="100vw" />
-            <Slots valueInSlots={valueInSlots} />
+            <SlotsStage valueInSlots={valueInSlots} />
         </div>
     );
 };

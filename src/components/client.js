@@ -11,13 +11,13 @@ import { getServerVariable } from '@/lib/store';
 const Client = () => {
     const [connection, setConnection] = useState(null);
     const [clientId, setClientId] = useState('');
-    //const [message, setMessage] = useState('');
     const [isConnected, setIsConnected] = useState(false);
-    //const [messages, setMessages] = useState([]);
     const [picIndex, setPicIndex] = useState(0);
     const [connectBtnPressed, setConnectBtnPressed] = useState(false);
-    const [timeUpOnUserModule, setTimeUpOnUserModule] = useState(false);
-    const [gameStart, setGameStart] = useState(false)
+    const [timeItTakes, setTimeItTakes] = useState(0)
+    //
+    //
+    const { puzzleStarted, setPuzzleStarted, puzzleAnswered, timeAtStart, timeUp, setTimeUp } = useContent();
     //
     //
     //
@@ -26,6 +26,34 @@ const Client = () => {
     })
     // a timeout flag for checking if client receives ping from server every sec
     let pingTimeout = 0;
+    //
+    //
+    useEffect(() => {
+        // calculate the time it has taken to finish
+        const timeNow = Date.now();
+        const timeTaken = timeNow - timeAtStart;
+        const seconds = Math.floor(timeTaken / 1000);
+        const milliseconds = timeTaken % 1000;
+        const timeTakenFull = `${seconds}.${milliseconds}`;
+        // for some reason its doing it twice, the 2nd one straight after .3 second
+        // so to prevent that, will ignore if the timeTaken is less then 1 second
+        if (seconds > 1) {
+            setTimeItTakes(timeTakenFull);
+            console.log(">>> puzzleAnswered : ", puzzleAnswered)
+        }
+    }, [puzzleAnswered]);
+    //
+    //
+    useEffect(() => {
+        if (connection) {
+            connection.send({ type: "from-cli-puzzleAnswered", data: { picIndex: picIndex, puzzleAnswered: true, timeItTook: timeItTakes } })
+        }
+    }, [timeItTakes])
+    //
+    //
+    useEffect(() => {
+        console.log(" timeUp : ", timeUp)
+    }, [timeUp])
     //
     //
     const handleConnect = () => {
@@ -41,7 +69,6 @@ const Client = () => {
 
         newPeer.on('open', (id) => {
             console.log('Client connected with ID:', id);
-
             console.log(' serverId : ', serverID)
             // this client start connecting with the server
             const conn = newPeer.connect(serverID);
@@ -52,14 +79,14 @@ const Client = () => {
                 setIsConnected(true);
             });
 
+            // RECEIVE FROM SERVER
             conn.on('data', (data) => {
                 console.log('Received data:', data);
-                /*if (data.type === 'clientList') {
-                    setClientList(data.data);
-                } else if (data.type === 'message') {
-                    setMessages(prevMessages => [...prevMessages, data.data]);
-                } else*/
-                if (data.type === 'pinging') {
+                //
+                if (data.type === 'from-ser-pinging') {
+                    if (data.data.screenIndex > 1) setPuzzleStarted(true)
+                    if (data.data.picIndex) setPicIndex(data.data.picIndex)
+                    setTimeUp(data.data.timeUp);
                     // detect if the server is still alive
                     setIsConnected(true)
                     clearTimeout(pingTimeout)
@@ -69,13 +96,14 @@ const Client = () => {
                     }, 2000);
                     // set picIndex so that it starts displaying the right image
                     //if (picIndex === null) setPicIndex(data.data.picIndex)
-                } else if (data.type === "updateTimeUp") {
-                    setTimeUpOnUserModule(data.timeUp)
-                } else if (data.type === 'updatePicIndex') {
+                } else if (data.type === "from-ser-timeUp") {
+                    //setTimeUpOnUserModule(data.timeUp)
+                    setTimeUp(data.timeUp)
+                } else if (data.type === 'from-ser-picIndex') {
                     setPicIndex(data.picIndex)
                     //setTimeUpOnUserModule(false)
-                } else if (data.type === 'gameStart') {
-                    setGameStart(true)
+                } else if (data.type === 'from-ser-gameStart') {
+                    setPuzzleStarted(true)
                 }
 
             });
@@ -86,31 +114,15 @@ const Client = () => {
             setConnectBtnPressed(false)
         });
     };
-
-    const sendMessage = () => {
-        if (connection && message.trim() !== '') {
-            const messageData = {
-                message: message
-            };
-            connection.send(messageData);
-            setMessage('');
-        }
-    };
-
-    const informServerPuzzleDone = () => {
-        if (connection) {
-            connection.send({ type: "puzzleDone", data: { picIndex: picIndex, puzzleDone: true } })
-        }
-    }
-
-    const screenLogin = ``
-
+    //
+    //
     return (
         <div>
             <div className='connection-indicator'>
                 <span className={`connection-indicator-dot ${isConnected ? 'connected' : ''} `}></span> {isConnected && (`connected as ${clientId}`)}
             </div>
             {
+
                 (!isConnected && (
                     <div className="flex flex-col gap-4 m-3 justify-center text-center">
                         <input
@@ -123,8 +135,8 @@ const Client = () => {
                         {!connectBtnPressed ? <Button value="Connect" func={handleConnect} /> : "Connecting ..."}
                     </div>
                 )) ||
-                (isConnected && !gameStart && (<div className="flex flex-col justify-center content-center"><div className="h-36 m-12 text-3xl text-center font-extrabold">Please wait for other users to join ...</div></div>)) ||
-                (isConnected && gameStart && (<div className="flex flex-col content-center items-center "><GameView data={DataList[picIndex]} informServerPuzzleDone={informServerPuzzleDone} timeUpOnUserModule={timeUpOnUserModule} /></div>))
+                (isConnected && !puzzleStarted && (<div className="flex flex-col justify-center content-center"><div className="flex items-center h-96 m-24 text-3xl text-center font-extrabold">Please wait for other users to join ...</div></div>)) ||
+                (isConnected && puzzleStarted && (<div className="flex flex-col content-center items-center "><GameView data={DataList[picIndex]} /></div>))
             }
         </div >
     );
