@@ -18,6 +18,8 @@
     "use-sound": "^4.0.3"
   },
   "devDependencies": {
+    "@types/node": "22.6.1",
+    "@types/react": "18.3.9",
     "eslint": "^8",
     "eslint-config-next": "14.2.12",
     "postcss": "^8",
