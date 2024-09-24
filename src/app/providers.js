@@ -2,6 +2,6 @@
 
 import { ContentProvider } from '@/hooks/useContent'
 
-export function Providers({ children }) {
+export default function Providers({ children }) {
     return <ContentProvider>{children}</ContentProvider>
 }
