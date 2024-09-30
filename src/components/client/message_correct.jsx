@@ -3,15 +3,12 @@ import ShowConfetti from './showConfetti';
 
 const MessageCorrect = () => {
     const [showText, setShowText] = useState(false);
-    const [confetti, setConfetti] = useState(false);
     //
     //
     useEffect(() => {
         const timer1 = setTimeout(() => setShowText(true), 500);
-        const timer2 = setTimeout(() => setConfetti(true), 1000);
         return () => {
             clearTimeout(timer1);
-            clearTimeout(timer2);
         }
     }, []);
 
@@ -24,7 +21,6 @@ const MessageCorrect = () => {
                     }}>
                     </div>
                     <div className="flex mt-60">
-                        {confetti && <ShowConfetti />}
                         <span
                             className="text-4xl font-bold text-black whitespace-nowrap opacity-0"
                             style={{
@@ -43,7 +39,7 @@ const MessageCorrect = () => {
                 opacity:0; }
             to { 
                 background-color: #B2EC68;
-                opacity: 0.8; 
+                opacity: 1; 
             }
         }
         @keyframes slide-down {

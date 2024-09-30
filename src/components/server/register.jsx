@@ -3,25 +3,35 @@ import Image from 'next/image';
 import useCountDown from '@/hooks/useCountDown';
 import { useContent } from '@/hooks/useContent';
 
-const Register = () => {
-    const { count, stop } = useCountDown(300);
-    const { setScreenIndex } = useContent();
+const Register = ({ clearTimerToScreenTwo }) => {
+    const { count, stop } = useCountDown(100);
+    const { setScreenIndex, bottomHeight } = useContent();
     //
     //
     useEffect(() => {
         if (count === 0) {
             stop();
             setScreenIndex(2);
+            clearTimerToScreenTwo();
         }
     }, [count]);
     //
     //
-    return (<div className='flex h-screen flex-col w-3/5 content-center justify-center items-center text-4xl ml-8 animate-fadeIn'>
-        <div className='w-100 unset'>
-            <Image className=" m-16 rounded-lg object-contain w-full relative" src="/assets/img/qrCode.png" alt="QR CODE" width={300} height={300} />
+    return (
+        <div className='flex flex-col h-full content-center  items-center text-4xl ml-8 animate-fadeIn'>
+            <div className='w-2/3 m-8'>
+                <div className='text-[5vh] leading-tight text-white'>Guess the word from an AI-generated picture before your friends and before the time runs out</div>
+                <div className='flex my-16'>
+                    <Image className="rounded-lg object-contain w-1/3" src="/assets/img/qrCode.png" alt="QR CODE" width={0} height={0} sizes='100' />
+                    <div className='font-[family-name:var(--font-ibm-bi)] text-game-red text-[2.5vw] leading-relaxed mx-[1vw]'>SCAN QR CODE TO JOIN ON YOUR PHONE</div>
+                </div>
+            </div>
+
+            <div className={`fixed bottom-0 font-[family-name:var(--font-ibm-r)] text-[2.5vw] text-white ${bottomHeight}`}>
+                GAME STARTS <span className='mx-8'>{count}</span>
+            </div>
         </div>
-        <div><b className='text-8xl mx-4'>{count}</b>secs left ...</div>
-    </div>)
+    )
 }
 
 export default Register;

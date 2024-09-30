@@ -74,10 +74,8 @@ const Timer = ({ init_counter = 10 }) => {
     //
     //
     return (
-        <div className='absolute top-0 left-0 w-screen h-screen flex content-center items-center'>
-            <div className={`border-2 text-4xl p-4 ml-12 font-bold ${isFlashing ? 'text-red-600' : 'text-white'}`}>
-                Timer : 0:{counter < 10 ? `0${counter}` : counter}
-            </div>
+        <div className={`${isFlashing ? 'text-game-red' : 'text-white'}`}>
+            GAME ENDS IN <span className='mx-3'>{counter}</span>
         </div>
     );
 };

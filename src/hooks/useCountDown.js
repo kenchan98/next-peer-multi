@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-const useCountdown = (initialValue) => {
+const useCountDown = (initialValue) => {
     const [count, setCount] = useState(initialValue);
     const [isActive, setIsActive] = useState(true);
     const intervalRef = useRef(null);
@@ -51,7 +51,7 @@ const useCountdown = (initialValue) => {
     };
 };
 
-export default useCountdown;
+export default useCountDown;
 
 // Usage example:
 // const { count, isActive, start, stop, reset } = useCountdown(60);

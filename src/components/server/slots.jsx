@@ -29,55 +29,24 @@ export default function Slots({ valueInSlots }) {
     //
     //
     return (
-        <div className={`flex ${valueInSlots.length <= 5 ? 'gap-6' : 'gap-2'} justify-center w-full`}>
+        <div className={`flex ${valueInSlots.length <= 6 ? 'gap-6' : 'gap-2'} m-8 justify-center w-full h-28`}>
             {valueInSlots.map((slot, index) => (
                 <div
                     key={index}
                     style={{
-                        width: valueInSlots.length <= 3
-                            ? `calc(${100 / 3}% - 0.5rem)`
-                            : `calc(${100 / valueInSlots.length}% - 0.5rem)`,
-                        maxWidth: '5rem' // This is equivalent to max-w-24
+                        width: valueInSlots.length <= 6
+                            ? `calc(${100 / 6}% - 2rem)`
+                            : `calc(${100 / valueInSlots.length}% - 1rem)`,
+                        maxWidth: '7rem' // This is equivalent to max-w-24
                     }}
                 >
-                    <div className="aspect-square bg-white w-full rounded-xl flex items-center justify-center p-2">
-                        <span className={`font-[family-name:var(--font-ibm-m)] text-black text-5xl ${reveal ? 'animate-textPopGlow opacity-100' : 'opacity-0'}`}>{slot.value}</span>
+                    <div className={`aspect-square ${reveal ? 'bg-game-green' : 'bg-white'} w-full rounded-xl flex items-center justify-center p-2`}>
+                        <span className={`font-[family-name:var(--font-ibm-m)] text-black text-6xl ${reveal ? 'animate-textPopGlow opacity-100' : 'opacity-0'}`}>{slot.value}</span>
                     </div>
                 </div>
             ))}
         </div>
+
     )
 }
 
-/*
-<div className="flex flex-wrap justify-center gap-2 w-full ">
-            {valueInSlots.map((slot, index) => (
-                <div
-                    key={index}
-                    className="bg-blue-500 "
-                    style={{ minWidth: `calc(${100 / valueInSlots.length}% - 0.5rem)` }}
-                >
-                    <div className="aspect-square bg-white max-w-24 rounded-xl"><span>{slot.value}</span></div>
-                </div>
-            ))}
-        </div>
-        */
-/*
-<div className={`flex justify-around rounded-xl w-full`}>
-            {
-                valueInSlots.map((slot, i) => {
-                    return (<div className="flex aspect-square rounded-xl justify-center items-center bg-white font-bold text-6xl text-black w-20" key={i} >
-                        <span className={`${timeUp ? "" : "hidden"}`}>{slot.value}</span>
-                    </div>)
-                })
-            }
-        </div>*/
-
-/*
-<div
-            key={index}
-            className="bg-blue-500 "
-            style={{ minWidth: `calc(${100 / valueInSlots.length}% - 0.5rem)` }}
-        >
-            <div className="aspect-square bg-white max-w-24 rounded-xl"><span>{slot.value}</span></div>
-        </div>*/

@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import useCountDown from '@/hooks/useCountDown';
+import { useContent } from '@/hooks/useContent';
 
 export default function Leaderboard({ clientsList }) {
     const [sortedList, setSortedList] = useState([
@@ -22,46 +25,128 @@ export default function Leaderboard({ clientsList }) {
                 ]
             }*/
     ]);
+    const [fastestList, setFastestList] = useState([])
+    //
+    //
+    const { setScreenIndex } = useContent();
+    const { count, reset, start, stop } = useCountDown();
+    //
+    // when the count down is 0 then it set screenIndex
+    // back to 1 to loop the stage back to the beginning
+    useEffect(() => {
+        if (count === 0) {
+            stop();
+            setScreenIndex(1);
+        }
+    }, [count]);
     //
     //
     useEffect(() => {
-        console.log(clientsList)
-        const totalsList = [...clientsList]
+        const totalsList = [...clientsList];
         totalsList.map((client) => {
             client.total = client.results.length
         });
         setSortedList([...totalsList].sort((a, b) => b.total - a.total));
         //
+        // create a list for the fastest in each puzzle
+        let _list = []
+        const list = [...clientsList];
+        list.map(client => {
+            client.results.map(result => {
+                const data = { ...result.data, name: client.id }
+                _list.push(data)
+            })
+        });
+        const _list2 = _list.reduce(function (_list2, org) {
+            (_list2[org.puzzleIndex] = _list2[org.puzzleIndex] || []).push(org);
+            return _list2;
+        }, {});
         //
+        const _list3 = [];
+        Object.keys(_list2).forEach(function (key) {
+            _list2[key].sort((a, b) => b.timeTakenToAnswer - a.timeTakenToAnswer);
+            _list3.push(_list2[key][_list2[key].length - 1])
+        });
+        setFastestList(_list3)
+        //
+        // start on the leaderboard for about 10 secs
+        //reset(10);
+        //start();
     }, [])
     //
     //
-    useEffect(() => {
-        console.log(sortedList)
-    }, [sortedList])
     return (
-        <div className='flex w-full h-3/5 grow items-center justify-center font-[family-name:var(--font-ibm-b)] animate-fadeIn'>
-            <div className="flex flex-col items-center w-1/3 text-black bg-gray-200 p-4 rounded-lg ">
-                <h2 className="text-3xl font-bold mb-4 text-center ">Leaderboard</h2>
-                <div className="flex text-xl font-bold mb-2 w-full">
-                    <span className="w-2/3 m-4">Name</span>
-                    <span className="w-1/3 m-4 text-right">Total</span>
+        <div className='flex flex-row animate-FadeIn w-full'>
+            <div className='w-1/2 m-8'>
+                <div className='flex w-auto items-center m-4 '>
+                    <div className='flex items-center w-full'><Image className='w-full' src='/assets/img/leaderboard.svg' width='40' height='40' alt='logo' /></div>
                 </div>
-                {
-                    sortedList.map((client, index) => {
-                        return <RowTotal client={client} key={index} />
-                    })
-                }
+                <div className='flex flex-col w-full '>
+                    {
+                        sortedList.map((client, index) => {
+                            return (
+                                <div className='flex w-full font-[family-name:var(--font-ibm-bi)] text-white text-[2vw] animate-slide-in' key={index}
+                                    style={{ animationDelay: `${index * 200}ms` }}>
+                                    <style jsx>{`
+                                    @keyframes slideIn {
+                                        from {
+                                            transform: translateY(30%);
+                                            opacity: 0;
+                                        }
+                                        to {
+                                            transform: translateY(0);
+                                            opacity: 1;
+                                        }
+                                    }
+                                    .animate-slide-in {
+                                        animation: slideIn 0.5s ease-out forwards;
+                                        opacity:0;
+                                    }
+                                `}</style>
+                                    <div className='w-[8vw] text-right m-2 '>{index + 1}.</div>
+                                    <div className='w-3/5 my-2 mx-4 truncate'>{client.id.toUpperCase()}</div>
+                                    <div className='m-2 '>{client.total}</div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
             </div>
-        </div>
-    )
-}
-
-const RowTotal = ({ client }) => {
-    return (
-        <div className="flex w-full justify-between items-center text-xl p-4 bg-gray-100 my-1 rounded font-[family-name:var(--font-ibm-m)]">
-            <span className="w-7/8 truncate">{client.id}</span>
-            <span className="w-1/8 content-end items-end  text-center justify-end"><div className="w-10 h-10 bg-amber-500 content-center text-center rounded-full">{client.total}</div></span>
+            <div className='w-1/2 m-8 mx-16'>
+                <div className='flex w-auto items-center m-4 '>
+                    <div className='flex items-center w-full'><Image className='w-full' src='/assets/img/fastest.svg' width='40' height='40' alt='logo' /></div>
+                </div>
+                <div className='flex flex-col w-full '>
+                    {
+                        fastestList.map((puzzle, index) => {
+                            return (
+                                <div className='flex w-full font-[family-name:var(--font-ibm-bi)] text-white text-[2vw] animate-slide-in' key={index}
+                                    style={{ animationDelay: `${index * 200}ms` }}>
+                                    <style jsx>{`
+                                    @keyframes slideIn {
+                                        from {
+                                            transform: translateY(30%);
+                                            opacity: 0;
+                                        }
+                                        to {
+                                            transform: translateY(0);
+                                            opacity: 1;
+                                        }
+                                    }
+                                    .animate-slide-in {
+                                        animation: slideIn 0.5s ease-out forwards;
+                                        opacity:0;
+                                    }
+                                `}</style>
+                                    <div className='w-[10vw] text-right m-2 '>PUZZLE {puzzle.puzzleIndex + 1}.</div>
+                                    <div className='w-1/2 my-2 mx-4 truncate'>{puzzle.name.toUpperCase()}</div>
+                                    <div className='m-2 '>{puzzle.timeTakenToAnswer}</div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            </div>
         </div>
     )
 }

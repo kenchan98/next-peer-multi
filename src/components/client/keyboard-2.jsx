@@ -34,7 +34,6 @@ const Keyboard_2 = React.forwardRef(({ keyboard, hasEmptySlot, addKeyStrokeInSlo
         _list3.push("DEL");
         //
         list_3rows.push(_list1, _list2, _list3);
-        console.log(list_3rows)
         setKeysList(list_3rows);
     }, [keyboard])
     //
@@ -121,7 +120,7 @@ const KeyDelete = ({ keyboardActivated, deleteValueInSlot }) => {
     }
     //
     return (
-        <div className={`flex justify-center items-center w-20 justify-center rounded ${keyIsDown ? 'bg-amber-600' : 'bg-gray-800'}`}
+        <div className={`flex justify-center items-center w-20 justify-center rounded ${keyIsDown ? 'bg-amber-600' : 'bg-gray-700'}`}
             onMouseDown={() => {
                 handleKeyDown()
             }}

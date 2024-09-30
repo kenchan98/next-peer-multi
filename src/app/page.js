@@ -5,7 +5,7 @@ import Server from "@/components/server/server";
 //
 export default function Home() {
   return (
-    <div className="font-[family-name:var(--font-ibm-r)] w-full aspect-video">
+    <div className="font-[family-name:var(--font-ibm-r)] w-full ">
       <Server />
     </div>
   );

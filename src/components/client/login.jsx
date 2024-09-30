@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import Button from "../general/button";
 
 const Login = ({ clientID, func1, func2 }) => {
-    const [connectButtonPressed, setConnectButtonPressed] = useState(false);
+    const [connectButtonPressed] = useState(false);
     /*const inputRef = useRef(null);
     //
     //
@@ -32,7 +32,7 @@ const Login = ({ clientID, func1, func2 }) => {
     //
     return (
         <div className="flex flex-col grow justify-center text-center">
-            <div className='flex font-[family-name:var(--font-ibm-bi)] justify-center items-center text-3xl h-1/2 '>WELCOME!</div>
+            <div className='flex font-[family-name:var(--font-ibm-bi)] justify-center items-center text-3xl h-1/2 text-white'>WELCOME!</div>
             <input
                 className="w-full h-12 p-2 mb-4 self-center text-gray-950 text-center rounded"
                 //ref={inputRef}
@@ -41,7 +41,7 @@ const Login = ({ clientID, func1, func2 }) => {
                 onChange={(e) => func1(e.target.value)}
                 placeholder="Please enter your name"
             />
-            {!connectButtonPressed ? <Button value="Join game" width='full' func={() => { func2(); setConnectButtonPressed(true) }} /> : "Connecting ..."}
+            {!connectButtonPressed ? <Button value="Join game" width='full' func={() => { func2(); }} /> : "Connecting ..."}
         </div>
     );
 }

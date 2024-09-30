@@ -36,7 +36,7 @@ export default function ClientPage() {
                 <title>Picture Pit Stop</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             </Head>
-            <div className="font-[family-name:var(--font-ibm-r)]">
+            <div className="font-[family-name:var(--font-ibm-r)] bg-black">
                 <Client />
             </div>
         </>

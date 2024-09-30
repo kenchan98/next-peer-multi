@@ -1,28 +1,30 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
 import DataList from "@/store/data";
 import Button from '../general/button';
 import { useContent } from '@/hooks/useContent';
 import Clients from './clients';
-import Register from './register';
-import Ready from './ready';
-import Instruction from './instruction';
-import GameStage from './gameStage';
-import InitSettings from './initSettings';
-import Top from './top';
+import Main from './main';
+import FloatingBubbles from '../general/bg_floatingBubbles';
+import StarryNight from '../general/bg_starryNight';
 import Leaderboard from './leaderboard';
+import Music from '../general/music';
 //
 
 const Server = () => {
     const [connections, setConnections] = useState({});
     const [isConnected, setIsConnected] = useState('');
     const [clientsList, setClientsList] = useState([]);
-    const [showClientsList, setShowClientsList] = useState(true);
     const [serverID, setServerID] = useState(null);
     const [serverVariable, setServerVariable] = useState('');
     const [userResults, setUserResults] = useState([]);
+    const [confirmPlay, setConfirmPlay] = useState([]);
+    const timerRef = useRef(null);
+    //
+    const [puzzleIndexRange] = useState(10);
+    const [puzzleIndexRangeEnd, setPuzzleIndexRangeEnd] = useState(null);
     let pingInterval, pingIndex = 0;
     //
     //
@@ -33,6 +35,8 @@ const Server = () => {
     // -------------------------------------------
     useEffect(() => {
         fetchServerVariable();
+        // set the puzzleIndex range at the beginning of each round
+        setPuzzleIndexRangeEnd(10)
     }, []);
     //
     // fetch serverVariable from the server api
@@ -54,6 +58,8 @@ const Server = () => {
         });
         const data = await res.json();
         setServerID(data.value);
+        //
+        //
         setScreenIndex(1);
     };
     //
@@ -101,19 +107,42 @@ const Server = () => {
     //
     useEffect(() => {
         updateAllClients({ type: 'from-server-screenIndex', screenIndex: screenIndex });
+        //
+        // reset for a new round
+        if (screenIndex === 1) {
+            setTimeUp(false);
+            // since we now have serveral rounds and using the same data set
+            // we dont reset the puzzleIndex to 0 and instead reset the puzzleIndexRangeEnd
+            //setPuzzleIndex(0);
+            setUserResults([])
+            //
+            const list = [...clientsList];
+            list.map(client => {
+                client.results = [];
+                client.answered = false;
+                client.total = 0;
+            });
+            setClientsList(list)
+        }
     }, [screenIndex]);
     //
     // every time when we move on to the next puzzle
     useEffect(() => {
-        if (puzzleIndex < DataList.length) {
+        //console.log('puzzleIndex : ', puzzleIndex)
+        //console.log('puzzleIndexRangeEnd : ', puzzleIndexRangeEnd)
+        //if (puzzleIndex < DataList.length) {
+        if (puzzleIndex < puzzleIndexRangeEnd) {
             updateAllClients({ type: 'from-server-puzzleIndex', puzzleIndex: puzzleIndex });
             resetAnsweredInClientsList();
             setTimeUp(false);
         } else {
-            // if all puzzles done then move on to loaderboard
-            setScreenIndex(screenIndex + 1)
+            if (screenIndex === 3) {
+                // if all puzzles done then move on to loaderboard
+                setScreenIndex(4);
+                //
+                setPuzzleIndexRangeThisRound();
+            }
         }
-        console.log(' DataList.length ??? ', DataList.length)
     }, [puzzleIndex]);
     //
     // this only get called when the game starts
@@ -141,10 +170,55 @@ const Server = () => {
     //
     //
     useEffect(() => {
+        const list = [...clientsList];
+        list.map((client) => {
+            if (client.id === confirmPlay.id) {
+                client.answered = true;
+            }
+        });
+        setClientsList(list);
+    }, [confirmPlay])
+    //
+    //
+    useEffect(() => {
         if (clientsList.length > 0) {
-            setShowClientsList(true);
+            // check if evryone is ready by pressing the PLAY button
+            if (screenIndex === 1) {
+                const isEveryoneReady = clientsList.every(client => client.answered);
+                //
+                if (isEveryoneReady) {
+                    // Clear any existing timer
+                    if (timerRef.current) {
+                        clearTimeout(timerRef.current);
+                    }
+
+                    // Set new timer
+                    timerRef.current = setTimeout(() => {
+                        resetAnsweredInClientsList();
+                        setScreenIndex(2);
+                    }, 5000);
+                }
+            }
         }
-    }, [clientsList])
+
+        // Cleanup function
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+
+    }, [clientsList]);
+    //
+    //
+    const clearTimerToScreenTwo = () => {
+        // Clear the timer if it exists
+        if (timerRef.current) {
+            resetAnsweredInClientsList()
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+    }
     //
     //
     const initialiseServer = () => {
@@ -157,7 +231,7 @@ const Server = () => {
         });
 
         peer.on('connection', (conn) => {
-            console.log('New client connected:', conn.peer);
+            console.log('New client connected:', conn);
 
             conn.on('open', () => {
                 // put all newly joined users into the clientsList
@@ -177,24 +251,27 @@ const Server = () => {
             // RECEIVE FROM CONTROLLER / CLIENTS
             conn.on('data', (data) => {
                 console.log('Received data:', data);
+                let user;
                 //
                 //
                 switch (data.type) {
-                    /*case "from-control-screenIndex":
-                        setScreenIndex(data.value);
-                        break;
-                    case "from-control-puzzleIndex":
-                        setPuzzleIndex(data.value)
-                        break;*/
                     case "from-client-puzzleAnswered":
-                        const user = { id: conn.peer, data: data.data };
+                        user = { id: conn.peer, data: data.data };
                         setUserResults(user);
+                        break;
+                    case "from-client-confirmPlay":
+                        user = { id: conn.peer, data: data }
+                        setConfirmPlay(user);
                         break;
                 }
             });
 
             conn.on('error', (error) => {
-                alert('Failed to connect. The ID might be taken or there was a network error.');
+                console.log('ERRORRRRRR --- ', error);
+                setClientsList(prevList => {
+                    const newList = prevList.filter(user => user.id !== conn.peer);
+                    return newList;
+                });
             });
 
             conn.on('close', () => {
@@ -228,7 +305,7 @@ const Server = () => {
         Object.values(connections).forEach(conn => {
             conn.send({ type: 'from-server-pinging', data: pingData });
         });
-        console.log(pingData)
+        //console.log(pingData)
     }
     //
     // each client in the clientsList has a prop 'answered'
@@ -244,35 +321,54 @@ const Server = () => {
     }
     //
     // a HACK to pass around the rendering components error
-    const setScreenIndexToFour = () => {
-        setTimeout(() => { setScreenIndex(4) }, 10)
+    const setScreenIndexToThree = () => {
+        setTimeout(() => { setScreenIndex(3) }, 10)
     }
     //
     //
+    const setPuzzleIndexRangeThisRound = () => {
+        console.log(puzzleIndexRangeEnd)
+        if (puzzleIndexRangeEnd < DataList.length - puzzleIndexRange) {
+            // for subsequence round, just resetting 'puzzleIndexRangeEnd'
+            // will determine when the round should end with the puzzleIndex
+            // and move on to the leaderboard 
+            setPuzzleIndexRangeEnd(puzzleIndexRangeEnd + puzzleIndexRange);
+        } else {
+            // reset puzzleIndex so that it restart from the 1st round
+            setPuzzleIndex(0);
+            setPuzzleIndexRangeEnd(puzzleIndexRange);
+        }
+    };
+    //
+    //
     return (
-        <div className='flex flex-col h-screen animate-fadeIn w-full h-full'>
-            <Top isConnected={isConnected} />
+        <div className='flex h-screen animate-fadeIn w-full h-full m-4'>
+            <Music />
+            {screenIndex <= 3 &&
+                <>
+                    <div className='w-1/2'>
+                        <Main isConnected={isConnected} screenIndex={screenIndex}
+                            serverVariable={serverVariable} setServerVariable={setServerVariable} updateServerVariable={updateServerVariable}
+                            setScreenIndexToThree={setScreenIndexToThree}
+                            DataList={DataList} puzzleIndex={puzzleIndex} puzzleIndexRangeEnd={puzzleIndexRangeEnd}
+                            clientsList={clientsList}
+                            clearTimerToScreenTwo={clearTimerToScreenTwo}
+                        />
+                    </div>
+                    <div className='w-1/2'>
+                        <Clients clientsList={clientsList} />
+                    </div>
+                </>}
+            {screenIndex === 4 && <Leaderboard clientsList={clientsList} />}
+            <StarryNight />
 
-            {
-                (screenIndex === 0 && (<InitSettings serverVariable={serverVariable} func1={setServerVariable} func2={updateServerVariable} />)) ||
-                (screenIndex === 1 && (<><Register /><Clients clientsList={clientsList} show={showClientsList} /></>)) ||
-                (screenIndex === 2 && (<Instruction />)) ||
-                (screenIndex === 3 && (<Ready func={() => { setScreenIndexToFour() }} />)) ||
-                (screenIndex === 4 && (<><GameStage data={DataList[puzzleIndex]} /><Clients clientsList={clientsList} show={showClientsList} /></>)) ||
-                (screenIndex === 5 && (<Leaderboard clientsList={clientsList} />))
-            }
-            <div className="flex gap-2 fixed bottom-0 left-0 opacity-10">
+            {/*<div className="flex gap-2 fixed bottom-0 left-0 opacity-5">
                 <Button value='screenIndex' func={() => { setScreenIndex(screenIndex + 1) }} />
                 <Button value='puzzleIndex --' func={() => { setPuzzleIndex(puzzleIndex - 1) }} />
                 <Button value='puzzleIndex ++' func={() => { setPuzzleIndex(puzzleIndex + 1) }} />
-                <Button value='show clients' func={() => { setShowClientsList(!showClientsList) }} />
-            </div>
+            </div>*/}
         </div>
     )
 }
 
 export default Server;
-
-/*
-
-            */

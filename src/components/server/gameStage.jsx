@@ -6,11 +6,11 @@ import useSound from 'use-sound';
 import useCountDown from '@/hooks/useCountDown';
 import { useContent } from '@/hooks/useContent';
 
-export default function gameStage({ data }) {
+export default function GameStage({ data, puzzleIndexRangeEnd }) {
     const [valueInSlots, setValueInSlots] = useState([]);
     const [fadeIn, setFadeIn] = useState('');
     const { count, reset, start, stop } = useCountDown();
-    const { puzzleIndex, setPuzzleIndex, timeUp } = useContent();
+    const { puzzleIndex, setPuzzleIndex, setScreenIndex, timeUp, bottomHeight } = useContent();
 
     const [sound_next] = useSound('/assets/sound/next.mp3')
     //
@@ -27,9 +27,17 @@ export default function gameStage({ data }) {
     // the count down to next puzzle begins
     useEffect(() => {
         if (timeUp) {
-            // start the count down to next puzzle
-            reset(10);
-            start();
+            if (puzzleIndex === puzzleIndexRangeEnd - 1) {
+                const timer = setTimeout(() => {
+                    setScreenIndex(4);
+                }, 4000);
+
+                return () => clearTimeout(timer)
+            } else {
+                // start the count down to next puzzle
+                reset(10);
+                start();
+            }
         }
     }, [timeUp]);
     //
@@ -52,16 +60,22 @@ export default function gameStage({ data }) {
     //
     //
     return (
-        <div className={`flex flex-col justify-center content-center items-center w-2/3 grow ${fadeIn}`}>
+        <div className={`flex flex-col justify-center content-center items-center ${fadeIn}`}>
             {
                 data &&
-                (<div className="flex flex-col items-center m-20">
-                    <Image className="w-full m-4 rounded-lg" src={`/assets/img/` + data.img} alt={data.img} width={0} height={0} sizes="100vw" />
+                (<>
+                    <Image className="w-[45vh] m-8 rounded-3xl" src={`/assets/img/` + data.img} alt={data.img} width={0} height={0} sizes="100vw" />
                     <Slots valueInSlots={valueInSlots} />
-                    {<Timer init_counter={30} />}
-                    {timeUp && (<div className='absolute w-2/3 bottom-48 left-12 text-3xl m-4'>Next puzzle in {count}</div>)}
-                </div>)
+                    <div className={`fixed bottom-0 font-[family-name:var(--font-ibm-r)] text-[2.5vw] text-white ${bottomHeight}`}>
+                        {timeUp ?
+                            ((puzzleIndex === puzzleIndexRangeEnd - 1) ? <></> : <div className='animate-fadeIn'>NEXT PUZZLE IN {count}</div>) :
+                            (<Timer init_counter={30} />)
+                        }
+                    </div>
+                </>)
             }
         </div>
     );
 }
+
+

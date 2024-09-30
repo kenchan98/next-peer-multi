@@ -23,8 +23,8 @@ const FloatingBubbles = () => {
         return () => clearInterval(interval);
     }, []);
 
-    return (
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+    return ( //fixed inset-0 overflow-hidden pointer-events-none bg-black
+        <div className="absolute top-0 left-0 -z-10 inset-0 overflow-hidden pointer-events-none bg-black">
             {bubbles.map(bubble => (
                 <div
                     key={bubble.id}

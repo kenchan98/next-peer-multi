@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useContent } from '@/hooks/useContent';
 import useSound from 'use-sound';
 
 export default function Ready({ func }) {
     const [count, setCount] = useState(5);
     const [colour, setColour] = useState('');
     const [message, setMessage] = useState('GET READY...');
-    const { bottomHeight } = useContent();
     const [sound_pop] = useSound('/assets/sound/sound_click.mp3');
     //
     //
@@ -17,7 +15,6 @@ export default function Ready({ func }) {
                     return prevCount - 1;
                 } else {
                     clearInterval(timer);
-                    func();
                     return '';
                 }
             });
@@ -41,9 +38,9 @@ export default function Ready({ func }) {
     }, [count])
     //
     //
-    return (<div className='flex flex-col grow content-center justify-center items-center font-[family-name:var(--font-ibm-bi)] '>
-        <div className={`flex text-get-ready grow m-8 ${colour}`}>{count}</div>
-        <div className={`fixed bottom-0 font-[family-name:var(--font-ibm-r)] text-[2.5vw] text-white ${bottomHeight}`}>{message}</div>
+    return (<div className='flex flex-col content-center justify-center items-center font-[family-name:var(--font-ibm-bi)] '>
+        <div className={`flex grow my-24 text-9xl ${colour}`}>{count}</div>
+        <div className='fixed bottom-0 font-[family-name:var(--font-ibm-r)] text-2xl text-white my-24'>{message}</div>
     </div>)
 }
 
