@@ -17,7 +17,7 @@ export default function GamePlay({ data }) {
     const [fadeIn, setFadeIn] = useState('');
     const [sound_correct] = useSound('/assets/sound/correct.mp3');
     const [sound_wrong] = useSound('/assets/sound/wrong2.mp3');
-    const [sound_timeUp] = useSound('/assets/sound/timeUp2.mp3');
+    const [sound_timeUp] = useSound('/assets/sound/church-bell.mp3');
     const [sound_next] = useSound('/assets/sound/next.mp3')
 
 

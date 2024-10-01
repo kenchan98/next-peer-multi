@@ -2,12 +2,10 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
-import DataList from "@/store/data";
-import Button from '../general/button';
+import DataList from "@/store/data_team";
 import { useContent } from '@/hooks/useContent';
 import Clients from './clients';
 import Main from './main';
-import FloatingBubbles from '../general/bg_floatingBubbles';
 import StarryNight from '../general/bg_starryNight';
 import Leaderboard from './leaderboard';
 import Music from '../general/music';

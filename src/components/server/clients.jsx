@@ -21,7 +21,7 @@ export default function Clients({ clientsList }) {
     return (
         <div className={`w-auto h-full m-4 transition-transform ease-in-out duration-300`}>
             <div className="font-[family-name:var(--font-ibm-bi)] ">
-                {screenIndex > 0 && <div className='text-[4vw] mx-[2vw] text-game-red animate-fadeIn'>PLAYERS</div>}
+                {screenIndex > 0 && (clientsList.length > 0 && <div className='text-[4vw] mx-[2vw] text-game-red animate-fadeIn'>PLAYERS</div>)}
                 <div className="grid grid-cols-6 gap-6 m-8 place-items-center content-start">
                     {clientsList.map((user, i) => {
                         return <Badge user={user} key={i} />

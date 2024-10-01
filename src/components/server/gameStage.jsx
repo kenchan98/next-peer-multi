@@ -35,7 +35,7 @@ export default function GameStage({ data, puzzleIndexRangeEnd }) {
                 return () => clearTimeout(timer)
             } else {
                 // start the count down to next puzzle
-                reset(10);
+                reset(15);
                 start();
             }
         }
@@ -68,7 +68,7 @@ export default function GameStage({ data, puzzleIndexRangeEnd }) {
                     <Slots valueInSlots={valueInSlots} />
                     <div className={`fixed bottom-0 font-[family-name:var(--font-ibm-r)] text-[2.5vw] text-white ${bottomHeight}`}>
                         {timeUp ?
-                            ((puzzleIndex === puzzleIndexRangeEnd - 1) ? <></> : <div className='animate-fadeIn'>NEXT PUZZLE IN {count}</div>) :
+                            ((puzzleIndex === puzzleIndexRangeEnd - 1) ? <></> : (count < 13) ? <div className='animate-fadeIn'>NEXT PUZZLE IN {count}</div> : <></>) :
                             (<Timer init_counter={30} />)
                         }
                     </div>

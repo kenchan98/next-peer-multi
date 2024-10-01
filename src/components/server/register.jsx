@@ -22,7 +22,7 @@ const Register = ({ clearTimerToScreenTwo }) => {
             <div className='w-2/3 m-8'>
                 <div className='text-[5vh] leading-tight text-white'>Guess the word from an AI-generated picture before your friends and before the time runs out</div>
                 <div className='flex my-16'>
-                    <Image className="rounded-lg object-contain w-1/3" src="/assets/img/qrCode.png" alt="QR CODE" width={0} height={0} sizes='100' />
+                    <Image className="rounded-lg object-contain w-1/3" src="/assets/img/qrCode2.png" alt="QR CODE" width={0} height={0} sizes='100' />
                     <div className='font-[family-name:var(--font-ibm-bi)] text-game-red text-[2.5vw] leading-relaxed mx-[1vw]'>SCAN QR CODE TO JOIN ON YOUR PHONE</div>
                 </div>
             </div>

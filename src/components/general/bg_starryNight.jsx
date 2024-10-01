@@ -64,9 +64,12 @@ const StarryNight = () => {
             <StarLayer count={200} size={2} speed={250} zIndex={10} />
             <StarLayer count={180} size={3} speed={200} zIndex={20} />
             <StarLayer count={160} size={4} speed={50} zIndex={30} />
-            <StarLayer count={180} size={3} speed={100} zIndex={20} />
-            <StarLayer count={160} size={5} speed={350} zIndex={30} />
-            <StarLayer count={10} size={8} speed={30} zIndex={30} />
+            <StarLayer count={180} size={3} speed={100} zIndex={40} />
+            <StarLayer count={160} size={5} speed={350} zIndex={50} />
+            <StarLayer count={100} size={2} speed={230} zIndex={60} />
+            <StarLayer count={100} size={3} speed={300} zIndex={70} />
+            <StarLayer count={100} size={4} speed={170} zIndex={80} />
+            <StarLayer count={30} size={8} speed={30} zIndex={90} />
         </div>
     );
 };

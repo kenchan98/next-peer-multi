@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import useCountDown from '@/hooks/useCountDown';
 import { useContent } from '@/hooks/useContent';
+import useSound from 'use-sound';
 
 export default function Leaderboard({ clientsList }) {
     const [sortedList, setSortedList] = useState([
@@ -25,6 +26,7 @@ export default function Leaderboard({ clientsList }) {
                 ]
             }*/
     ]);
+    const [sound_sweep] = useSound('/assets/sound/sweep-sound.mp3');
     const [fastestList, setFastestList] = useState([])
     //
     //
@@ -34,9 +36,11 @@ export default function Leaderboard({ clientsList }) {
     // when the count down is 0 then it set screenIndex
     // back to 1 to loop the stage back to the beginning
     useEffect(() => {
-        if (count === 0) {
+        if (count === 1) { // 0) {
+            //
+            //setScreenIndex(1);
+            sound_sweep();
             stop();
-            setScreenIndex(1);
         }
     }, [count]);
     //
@@ -70,13 +74,13 @@ export default function Leaderboard({ clientsList }) {
         setFastestList(_list3)
         //
         // start on the leaderboard for about 10 secs
-        //reset(10);
-        //start();
+        reset(2);
+        start();
     }, [])
     //
     //
     return (
-        <div className='flex flex-row animate-FadeIn w-full'>
+        <div className='flex flex-row animate-fadeIn w-full'>
             <div className='w-1/2 m-8'>
                 <div className='flex w-auto items-center m-4 '>
                     <div className='flex items-center w-full'><Image className='w-full' src='/assets/img/leaderboard.svg' width='40' height='40' alt='logo' /></div>
@@ -140,7 +144,7 @@ export default function Leaderboard({ clientsList }) {
                                 `}</style>
                                     <div className='w-[10vw] text-right m-2 '>PUZZLE {puzzle.puzzleIndex + 1}.</div>
                                     <div className='w-1/2 my-2 mx-4 truncate'>{puzzle.name.toUpperCase()}</div>
-                                    <div className='m-2 '>{puzzle.timeTakenToAnswer}</div>
+                                    <div className='m-2 '>{puzzle.timeTakenToAnswer}s</div>
                                 </div>
                             )
                         })
