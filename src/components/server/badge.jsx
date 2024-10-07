@@ -20,7 +20,7 @@ export default function Badge({ user }) {
     return (
         <div className={`flex aspect-square w-full justify-center items-center rounded-full text-5xl  
                 ${user.answered ? 'bg-game-green text-black animate-popUp' : 'bg-game-gray text-white animate-popIn'}`}>
-            {user.id.substring(0, 2)}
+            {user.id.substring(0, 2).toUpperCase()}
         </div>
     )
 }

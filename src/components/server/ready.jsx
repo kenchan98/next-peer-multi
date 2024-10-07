@@ -41,9 +41,9 @@ export default function Ready({ func }) {
     }, [count])
     //
     //
-    return (<div className='flex flex-col grow content-center justify-center items-center font-[family-name:var(--font-ibm-bi)] '>
-        <div className={`flex text-get-ready grow m-8 ${colour}`}>{count}</div>
-        <div className={`fixed bottom-0 font-[family-name:var(--font-ibm-r)] text-[2.5vw] text-white ${bottomHeight}`}>{message}</div>
+    return (<div className='flex flex-col content-center justify-center items-center font-[family-name:var(--font-ibm-bi)] '>
+        <div className={`flex text-get-ready flex-grow m-8 ${colour}`}>{count}</div>
+        <div className={`font-[family-name:var(--font-ibm-r)] text-[2.5vw] text-white m-8`}>{message}</div>
     </div>)
 }
 

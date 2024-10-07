@@ -7,7 +7,9 @@ import Top from "./top";
 export default function Main({ isConnected, screenIndex,
     serverVariable, setServerVariable, updateServerVariable,
     setScreenIndexToThree,
-    DataList, puzzleIndex, puzzleIndexRangeEnd,
+    DataList, puzzleIndex,
+    puzzleIndexRangeEnd, setPuzzleIndexRangeInTheRound,
+    clientsList,
     clearTimerToScreenTwo
 }) {
     return (
@@ -20,9 +22,9 @@ export default function Main({ isConnected, screenIndex,
                     func2={updateServerVariable}
                 />
             )}
-            {screenIndex === 1 && <Register clearTimerToScreenTwo={clearTimerToScreenTwo} />}
+            {screenIndex === 1 && <Register clearTimerToScreenTwo={clearTimerToScreenTwo} clientsList={clientsList} />}
             {screenIndex === 2 && <Ready func={setScreenIndexToThree} />}
-            {screenIndex === 3 && <GameStage data={DataList[puzzleIndex]} puzzleIndexRangeEnd={puzzleIndexRangeEnd} />}
+            {screenIndex === 3 && <GameStage data={DataList[puzzleIndex]} puzzleIndexRangeEnd={puzzleIndexRangeEnd} setPuzzleIndexRangeInTheRound={setPuzzleIndexRangeInTheRound} />}
         </>
     );
 }

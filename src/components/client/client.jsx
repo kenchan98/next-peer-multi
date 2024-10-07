@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
 import Login from './login';
 import GamePlay from './gamePlay';
-import DataList from '@/store/data_team';
+import DataList from '@/store/data';
 import { useContent } from '@/hooks/useContent';
 import Top from './top';
 import MessageWait from './message_wait';
@@ -22,7 +22,7 @@ const Client = () => {
     const [data, setData] = useState(null);
     const [timeTakenToAnswer, setTimeTakenToAnswer] = useState('');
     const [msgNextPuzzle, setMsgNextPuzzle] = useState(false)
-    const { screenIndex, setScreenIndex, puzzleIndex, puzzleAnswered, setPuzzleAnswered, setPuzzleIndex, timerCount, setTimerCount, timeAtStart, setTimeAtStart, timeUp, setTimeUp } = useContent();
+    const { screenIndex, setScreenIndex, puzzleIndex, puzzleAnswered, setPuzzleIndex, timerCount, setTimerCount, timeAtStart, setTimeAtStart, timeUp, setTimeUp } = useContent();
     const [serverID, setServerID] = useState();
 
     let pingTimeout;
@@ -58,6 +58,10 @@ const Client = () => {
     useEffect(() => {
         // start counting time when puzzle begins
         setTimeAtStart(Date.now());
+        // making sure Message Next Puzzle doesnt stay on screen when game starts
+        if (msgNextPuzzle) {
+            setMsgNextPuzzle(false);
+        }
     }, [data]);
     //
     //
@@ -95,6 +99,10 @@ const Client = () => {
             timeoutMsgNextPuzzle = setTimeout(() => {
                 setMsgNextPuzzle(true);
             }, 4000);
+        }
+
+        return () => {
+            clearTimeout(timeoutMsgNextPuzzle);
         }
     }, [timeUp])
     //
@@ -154,6 +162,10 @@ const Client = () => {
                     setPuzzleIndex(data.puzzleIndex);
                 } else if (data.type === 'from-server-screenIndex') {
                     setScreenIndex(data.screenIndex);
+                    if (data.screenIndex === 3) {
+                        // HACK - the tick is not resetting for the 1st puzzle when data change
+                        setTimeAtStart(Date.now());
+                    }
                 } else if (data.type === 'from-server-timerCount') {
                     setTimerCount(data.timerCount);
                 }
@@ -161,16 +173,26 @@ const Client = () => {
 
             conn.on('close', () => {
                 alert('Lost connection to server');
+                location.reload();
             });
         });
 
         peer.on('error', (error) => {
-            alert('Failed to connect. The ID might be taken or there was a network error.');
+            alert(error);
+            location.reload();
+            //alert('Failed to connect. The ID might be taken or there was a network error.');
             setIsConnecting(false);
         });
 
         // 
         setIsConnecting(true);
+        console.log(puzzleIndex, screenIndex, timeUp)
+    }
+    //
+    //
+    const reset = () => {
+        setScreenIndex(0);
+        setPuzzleIndex()
     }
     //
     //

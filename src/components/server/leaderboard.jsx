@@ -5,27 +5,7 @@ import { useContent } from '@/hooks/useContent';
 import useSound from 'use-sound';
 
 export default function Leaderboard({ clientsList }) {
-    const [sortedList, setSortedList] = useState([
-        /*    {
-                id: 'Ken', total: 3, results: [
-                    { id: 'Ken', data: { puzzleIndex: 0, timeTakenToAnswer: '23.567' } },
-                    { id: 'Ken', data: { puzzleIndex: 1, timeTakenToAnswer: '12.829' } },
-                    { id: 'Ken', data: { puzzleIndex: 3, timeTakenToAnswer: '13.451' } },
-                ]
-            },
-            {
-                id: 'May', total: 2, results: [
-                    { id: 'May', data: { puzzleIndex: 0, timeTakenToAnswer: '13.567' } },
-                    { id: 'May', data: { puzzleIndex: 3, timeTakenToAnswer: '29.451' } },
-                ]
-            },
-            {
-                id: 'Nina', total: 2, results: [
-                    { id: 'Nina', data: { puzzleIndex: 1, timeTakenToAnswer: '14.567' } },
-                    { id: 'Nina', data: { puzzleIndex: 3, timeTakenToAnswer: '27.451' } },
-                ]
-            }*/
-    ]);
+    const [sortedList, setSortedList] = useState([]);
     const [sound_sweep] = useSound('/assets/sound/sweep-sound.mp3');
     const [fastestList, setFastestList] = useState([])
     //
@@ -36,11 +16,12 @@ export default function Leaderboard({ clientsList }) {
     // when the count down is 0 then it set screenIndex
     // back to 1 to loop the stage back to the beginning
     useEffect(() => {
-        if (count === 1) { // 0) {
-            //
-            //setScreenIndex(1);
+        if (count === 14) {
+            // play the welcome to leaderboard sound
             sound_sweep();
+        } else if (count === 0) {
             stop();
+            setScreenIndex(1);
         }
     }, [count]);
     //
@@ -74,7 +55,7 @@ export default function Leaderboard({ clientsList }) {
         setFastestList(_list3)
         //
         // start on the leaderboard for about 10 secs
-        reset(2);
+        reset(15);
         start();
     }, [])
     //
@@ -150,6 +131,9 @@ export default function Leaderboard({ clientsList }) {
                         })
                     }
                 </div>
+            </div>
+            <div className='fixed bottom-0 flex w-1/2 content-center justify-center font-[family-name:var(--font-ibm-r)] text-[2.5vw] text-white m-8 animate-fadeIn'>
+                NEXT GAME STARTS <span className='mx-4'>{count}</span>
             </div>
         </div>
     )

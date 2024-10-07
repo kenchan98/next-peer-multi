@@ -1,52 +1,62 @@
 const DataList = [
     {
-        img: "1.jpg",
-        theAnswer: "USB",
+        img: "carpet.jpg",
+        theAnswer: "CARPET",
         keyboard: "TIFUEBUTANMHVSR",
     },
     {
-        img: "2.jpg",
-        theAnswer: "USBUSB",
+        img: "windshield.jpg",
+        theAnswer: "WINDSHIELD",
         keyboard: "RABFYONTHBXEPRG",
     },
     {
-        img: "3.jpg",
-        theAnswer: "USBUSBUSBU",
+        img: "dashboard.jpg",
+        theAnswer: "DASHBOARD",
         keyboard: "QABFNONTHBXEPMG",
     },
     {
-        img: "1.jpg",
-        theAnswer: "USBUSBUSB",
+        img: "parking.jpg",
+        theAnswer: "PARKING",
         keyboard: "CABWNONTHBSEPMI",
     },
     {
-        img: "2.jpg",
-        theAnswer: "USBUSBUSB",
+        img: "seatbelt.jpg",
+        theAnswer: "SEATBELT",
         keyboard: "RUBFNOCTHBXEPUT",
     },
     {
-        img: "1.jpg",
-        theAnswer: "USBUSBUSBU",
+        img: "carpool.jpg",
+        theAnswer: "CARPOOL",
         keyboard: "TIFUEBUTANMHVSR",
     },
     {
-        img: "2.jpg",
-        theAnswer: "USBUSBUSBU",
+        img: "headlights.jpg",
+        theAnswer: "HEADLIGHTS",
         keyboard: "RABFYONTHBXEPRG",
     },
     {
-        img: "3.jpg",
-        theAnswer: "USBUSBUSBU",
+        img: "sparkplugs.jpg",
+        theAnswer: "SPARKPLUGS",
         keyboard: "QABFNONTHBXEPMG",
     },
     {
-        img: "1.jpg",
-        theAnswer: "USBUSBUSBU",
+        img: "wheelarch.jpg",
+        theAnswer: "WHEELARCH",
         keyboard: "CABWNONTHBSEPMI",
     },
     {
-        img: "2.jpg",
-        theAnswer: "USBUSBUSBU",
+        img: "ticket.jpg",
+        theAnswer: "TICKET",
+        keyboard: "RUBFNOCTHBXEPUT",
+    },
+    {
+        img: "sunroof.jpg",
+        theAnswer: "SUNROOF",
+        keyboard: "RUBFNOCTHBXEPUT",
+    },
+    {
+        img: "battery.jpg",
+        theAnswer: "BATTERY",
         keyboard: "RUBFNOCTHBXEPUT",
     }
 ];

@@ -12,8 +12,10 @@ export function ContentProvider({ children }) {
     const [timerCount, setTimerCount] = useState(0);
     const [timeUp, setTimeUp] = useState(false);
     const [keyboardType, setKeyboardType] = useState(2);
-    const [musicActivated, setMusicActivated] = useState(false)
-    const [bottomHeight] = useState('m-20');
+    const [musicActivated, setMusicActivated] = useState(false);
+    //
+    //const [puzzleIndexRange] = useState(3);
+    //const [puzzleIndexRangeEnd, setPuzzleIndexRangeEnd] = useState(null);
 
     return (
         <ContentContext.Provider value={{
@@ -25,7 +27,8 @@ export function ContentProvider({ children }) {
             timerCount, setTimerCount,
             keyboardType, setKeyboardType,
             musicActivated, setMusicActivated,
-            bottomHeight
+            //puzzleIndexRange,
+            //puzzleIndexRangeEnd, setPuzzleIndexRangeEnd
         }}>
             {children}
         </ContentContext.Provider>

@@ -207,3 +207,48 @@ body {
 .animate-textPopGlow {
   animation: textPopGlow .7s ease-in-out;
 }
+
+@keyframes dropIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-dropIn {
+  animation: dropIn .5s ease-in-out forwards;
+  opacity: 0;
+}
+
+@keyframes floatUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-floatUp {
+  animation: floatUp .4s ease-in forwards;
+  opacity: 0;
+}
+
+@keyframes fadeTo40 {
+
+  to {
+    opacity: .4;
+  }
+}
+
+.animate-fadeTo40 {
+  animation: fadeTo40 .4s ease-in forwards;
+}

@@ -12,9 +12,9 @@ export default function GamePlay({ data }) {
 
     const [hasEmptySlot, setHasEmptySlot] = useState(true);
     const [valueInSlots, setValueInSlots] = useState([]);
-    const [animateResultInSlots, setAnimateResultInSlots] = useState('');
+    const [isAnswerCorrect, setIsAnswerCorrect] = useState('');
     const [showMessageCorrect, setShowMessageCorrect] = useState(false);
-    const [fadeIn, setFadeIn] = useState('');
+    const [animateIn, setAnimateIn] = useState('');
     const [sound_correct] = useSound('/assets/sound/correct.mp3');
     const [sound_wrong] = useSound('/assets/sound/wrong2.mp3');
     const [sound_timeUp] = useSound('/assets/sound/church-bell.mp3');
@@ -46,10 +46,10 @@ export default function GamePlay({ data }) {
             setShowMessageCorrect(false);
             //
             sound_next();
-            setFadeIn('animate-fadeIn');
-            const fadeInTimeout = setTimeout(() => { setFadeIn('') }, 500);
+            setAnimateIn('animate-fadeIn');
+            const animateInTimeout = setTimeout(() => { setAnimateIn('') }, 500);
 
-            return () => clearTimeout(fadeInTimeout)
+            return () => clearTimeout(animateInTimeout)
         }
     }, [data]);
     //
@@ -70,7 +70,7 @@ export default function GamePlay({ data }) {
         // to be pressed or not
         setHasEmptySlot(!noEmptySlot)
         // reset the animation for correct/wrong answer on the slots
-        setAnimateResultInSlots('')
+        setIsAnswerCorrect('')
         // if all slots filled then check if the word is correct
         if (noEmptySlot && valueInSlots.length > 0) checkAnswer()
         //console.log(valueInSlots)
@@ -156,24 +156,22 @@ export default function GamePlay({ data }) {
             // inform the puzzle is correctly answered, 
             // useEffect of puzzleAnswered in client.js 
             setPuzzleAnswered(true);
-            setAnimateResultInSlots('correct');
+            setIsAnswerCorrect(true);
         } else {
             //console.log("OH NO")
             sound_wrong();
-            // show incorrect anwser animation 
-            let value = 'animate-shake drop-shadow-[0px_0px_20px_rgba(255,0,0,1)]'
-            setAnimateResultInSlots('incorrect');
+            setIsAnswerCorrect(false);
         }
     }
     //
     //
     return (
-        <div className={`flex flex-col h-screen content-center items-center ${fadeIn}`}>
+        <div className={`flex flex-col h-screen content-center items-center ${animateIn}`}>
             {
                 data &&
                 <>
-                    <Image className=" m-3 p-3 rounded-3xl object-contain" src={`/assets/img/` + data.img} alt={data.img} width="500" height="500" />
-                    <Slots valueInSlots={valueInSlots} resetValueInSlot={resetValueInSlot} animateResultInSlots={animateResultInSlots} />
+                    <Image className={`m-3 p-3 rounded-3xl object-contain`} src={`/assets/img/` + data.img} alt={data.img} width="500" height="500" />
+                    <Slots valueInSlots={valueInSlots} resetValueInSlot={resetValueInSlot} isAnswerCorrect={isAnswerCorrect} />
                     {keyboardType === 1 ?
                         (<Keyboard ref={keyboardRef} keyboard={data.keyboard} addKeyStrokeInSlots={addKeyStrokeInSlots} hasEmptySlot={hasEmptySlot} />) :
                         (<Keyboard_2 keyboard={data.keyboard} addKeyStrokeInSlots={addKeyStrokeInSlots} hasEmptySlot={hasEmptySlot} deleteValueInSlot={deleteValueInSlot} />)

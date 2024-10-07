@@ -17,6 +17,13 @@ module.exports = {
         'game-pink': '#FFC6C6',
         'game-red': '#FD4A4A',
       },
+      backgroundImage: theme => ({
+        'gradient-to-45':
+          'linear-gradient(45deg, #ffed4a, #ff3860)',
+        'gradient-to-135':
+          'linear-gradient(135deg, black, transparent)',
+        // You can add more custom classes here
+      }),
       fontFamily: {
         "ibmBI": "var(--font-ibm-bi)",
         "ibmR": "var(--font-ibm-r)",

@@ -2,13 +2,15 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
-import DataList from "@/store/data_team";
+import DataList from "@/store/data";
 import { useContent } from '@/hooks/useContent';
 import Clients from './clients';
 import Main from './main';
 import StarryNight from '../general/bg_starryNight';
 import Leaderboard from './leaderboard';
 import Music from '../general/music';
+import Button from '../general/button';
+import BgImages from '../general/bg_images';
 //
 
 const Server = () => {
@@ -21,8 +23,8 @@ const Server = () => {
     const [confirmPlay, setConfirmPlay] = useState([]);
     const timerRef = useRef(null);
     //
-    const [puzzleIndexRange] = useState(10);
-    const [puzzleIndexRangeEnd, setPuzzleIndexRangeEnd] = useState(null);
+    const puzzleIndexRange = 3;
+    const [puzzleIndexRangeEnd, setPuzzleIndexRangeEnd] = useState(puzzleIndexRange);
     let pingInterval, pingIndex = 0;
     //
     //
@@ -33,8 +35,6 @@ const Server = () => {
     // -------------------------------------------
     useEffect(() => {
         fetchServerVariable();
-        // set the puzzleIndex range at the beginning of each round
-        setPuzzleIndexRangeEnd(10)
     }, []);
     //
     // fetch serverVariable from the server api
@@ -122,25 +122,32 @@ const Server = () => {
             });
             setClientsList(list)
         }
+        //
+        // HACK - it doesnt always clear the green badge 
+        if (screenIndex === 2) {
+            resetAnsweredInClientsList()
+        }
+        //
+        //
     }, [screenIndex]);
     //
     // every time when we move on to the next puzzle
     useEffect(() => {
         //console.log('puzzleIndex : ', puzzleIndex)
         //console.log('puzzleIndexRangeEnd : ', puzzleIndexRangeEnd)
-        //if (puzzleIndex < DataList.length) {
-        if (puzzleIndex < puzzleIndexRangeEnd) {
-            updateAllClients({ type: 'from-server-puzzleIndex', puzzleIndex: puzzleIndex });
-            resetAnsweredInClientsList();
-            setTimeUp(false);
-        } else {
+        //if (puzzleIndex < puzzleIndexRangeEnd) {
+        updateAllClients({ type: 'from-server-puzzleIndex', puzzleIndex: puzzleIndex });
+        resetAnsweredInClientsList();
+        setTimeUp(false);
+        //}
+        /* else {
             if (screenIndex === 3) {
-                // if all puzzles done then move on to loaderboard
-                setScreenIndex(4);
                 //
                 setPuzzleIndexRangeThisRound();
+                // if all puzzles done then move on to loaderboard
+                //setScreenIndex(4);
             }
-        }
+        }*/
     }, [puzzleIndex]);
     //
     // this only get called when the game starts
@@ -210,9 +217,9 @@ const Server = () => {
     //
     //
     const clearTimerToScreenTwo = () => {
+        resetAnsweredInClientsList();
         // Clear the timer if it exists
         if (timerRef.current) {
-            resetAnsweredInClientsList()
             clearTimeout(timerRef.current);
             timerRef.current = null;
         }
@@ -324,17 +331,20 @@ const Server = () => {
     }
     //
     //
-    const setPuzzleIndexRangeThisRound = () => {
-        console.log(puzzleIndexRangeEnd)
-        if (puzzleIndexRangeEnd < DataList.length - puzzleIndexRange) {
-            // for subsequence round, just resetting 'puzzleIndexRangeEnd'
-            // will determine when the round should end with the puzzleIndex
-            // and move on to the leaderboard 
-            setPuzzleIndexRangeEnd(puzzleIndexRangeEnd + puzzleIndexRange);
-        } else {
+    const setPuzzleIndexRangeInTheRound = () => {
+        /*console.log('puzzleIndexRangeEnd : ', puzzleIndexRangeEnd)
+        console.log(DataList.length - puzzleIndexRange);
+        console.log('_____________________')
+        */
+        if (puzzleIndexRangeEnd > DataList.length - 1) {
+            console.log("RESET puzzleIndexRange")
             // reset puzzleIndex so that it restart from the 1st round
             setPuzzleIndex(0);
             setPuzzleIndexRangeEnd(puzzleIndexRange);
+        } else {
+
+            setPuzzleIndex(puzzleIndex + 1);
+            setPuzzleIndexRangeEnd(puzzleIndexRangeEnd + puzzleIndexRange);
         }
     };
     //
@@ -348,7 +358,9 @@ const Server = () => {
                         <Main isConnected={isConnected} screenIndex={screenIndex}
                             serverVariable={serverVariable} setServerVariable={setServerVariable} updateServerVariable={updateServerVariable}
                             setScreenIndexToThree={setScreenIndexToThree}
-                            DataList={DataList} puzzleIndex={puzzleIndex} puzzleIndexRangeEnd={puzzleIndexRangeEnd}
+                            DataList={DataList} puzzleIndex={puzzleIndex}
+                            puzzleIndexRangeEnd={puzzleIndexRangeEnd}
+                            setPuzzleIndexRangeInTheRound={setPuzzleIndexRangeInTheRound}
                             clientsList={clientsList}
                             clearTimerToScreenTwo={clearTimerToScreenTwo}
                         />
@@ -358,13 +370,13 @@ const Server = () => {
                     </div>
                 </>}
             {screenIndex === 4 && <Leaderboard clientsList={clientsList} />}
-            <StarryNight />
 
-            {/*<div className="flex gap-2 fixed bottom-0 left-0 opacity-5">
+            {<div className="flex gap-2 fixed bottom-0 left-0 opacity-5">
                 <Button value='screenIndex' func={() => { setScreenIndex(screenIndex + 1) }} />
                 <Button value='puzzleIndex --' func={() => { setPuzzleIndex(puzzleIndex - 1) }} />
                 <Button value='puzzleIndex ++' func={() => { setPuzzleIndex(puzzleIndex + 1) }} />
-            </div>*/}
+            </div>}
+            <BgImages clientsList={clientsList} />
         </div>
     )
 }
