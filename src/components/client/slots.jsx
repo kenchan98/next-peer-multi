@@ -17,7 +17,7 @@ export default function Slots({ valueInSlots, resetValueInSlot, isAnswerCorrect 
     const styles_incorrect = 'bg-game-pink animate-shake border-2 border-[#F43838]';
 
     return (
-        <div className={`flex justify-around w-full`}>
+        <div className={`flex justify-center gap-2 w-full`}>
             {
                 valueInSlots.map((slot, i) => {
                     const isError = (isAnswerCorrect === false) && (slot.value !== slot.answer);

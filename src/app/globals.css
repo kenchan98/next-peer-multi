@@ -91,6 +91,10 @@ body {
   animation: fadeIn 0.5s;
 }
 
+.animate-fadeInSlower {
+  animation: fadeIn 1s;
+}
+
 /*
 
 
@@ -250,5 +254,5 @@ body {
 }
 
 .animate-fadeTo40 {
-  animation: fadeTo40 .4s ease-in forwards;
+  animation: fadeTo40 1s ease-in forwards;
 }

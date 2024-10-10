@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
 import Login from './login';
 import GamePlay from './gamePlay';
-import DataList from '@/store/data';
+import DataList from '@/store/data_team';
 import { useContent } from '@/hooks/useContent';
 import Top from './top';
 import MessageWait from './message_wait';
@@ -18,7 +18,8 @@ const Client = () => {
     const [connection, setConnection] = useState(null);
     const [clientID, setClientID] = useState('');
     const [isConnected, setIsConnected] = useState(false);
-    const [isConnecting, setIsConnecting] = useState(false)
+    const [isConnecting, setIsConnecting] = useState(false);
+    const [isPlayButtonPressed, setIsPlayButtonPressed] = useState(false);
     const [data, setData] = useState(null);
     const [timeTakenToAnswer, setTimeTakenToAnswer] = useState('');
     const [msgNextPuzzle, setMsgNextPuzzle] = useState(false)
@@ -49,10 +50,11 @@ const Client = () => {
         console.log('timerCount +++ ', timerCount)
     }, [timerCount]);
     //
-    //
+    //*/
     useEffect(() => {
+        //console.log('screenIndex : ', screenIndex)
+        setIsPlayButtonPressed(false)
     }, [screenIndex]);
-    */
     //
     //
     useEffect(() => {
@@ -116,7 +118,19 @@ const Client = () => {
     //
     const confirmPlay = () => {
         connection.send({ type: "from-client-confirmPlay", data: { confirmPlay: true } });
-        setScreenIndex(1);
+        //setScreenIndex(1);
+        setIsPlayButtonPressed(true);
+    }
+    //
+    //
+    const checkClientIDValidity = (e) => {
+        const allowedChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        const newValue = e.target.value
+            .split('')
+            .filter(char => allowedChars.includes(char.toLowerCase()))
+            .join('');
+
+        setClientID(newValue);
     }
     //
     //
@@ -186,13 +200,9 @@ const Client = () => {
 
         // 
         setIsConnecting(true);
-        console.log(puzzleIndex, screenIndex, timeUp)
-    }
-    //
-    //
-    const reset = () => {
-        setScreenIndex(0);
-        setPuzzleIndex()
+        //console.log(puzzleIndex, screenIndex, timeUp);
+        //
+        setScreenIndex(1);
     }
     //
     //
@@ -200,9 +210,8 @@ const Client = () => {
         <div className='flex flex-col h-[calc(100dvh)] bg-black p-4 animate-fadeIn'>
             <Top isConnected={isConnected} timerCount={screenIndex === 3 ? timerCount : ''} />
             {
-                (!isConnected && (isConnecting ? (<MessageConnecting />) : (<Login func1={setClientID} func2={handleConnect} />))) ||
-                (isConnected && screenIndex === 0 && (<ConfirmPlay func1={confirmPlay} />)) ||
-                (isConnected && screenIndex === 1 && (<MessageWait />)) ||
+                (!isConnected && (isConnecting ? (<MessageConnecting />) : (<Login func1={checkClientIDValidity} func2={handleConnect} />))) ||
+                (isConnected && screenIndex === 1 && (isPlayButtonPressed ? <MessageWait /> : <ConfirmPlay func1={confirmPlay} />)) ||
                 (isConnected && screenIndex === 2 && (<Ready />)) ||
                 (isConnected && screenIndex === 3 && (msgNextPuzzle ? (<MessageNextPuzzle />) : (<GamePlay data={data} />))) ||
                 (isConnected && screenIndex === 4 && (<MessageFill message="THANK YOU FOR PLAYING" />))

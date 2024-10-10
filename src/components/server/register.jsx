@@ -4,7 +4,7 @@ import useCountDown from '@/hooks/useCountDown';
 import { useContent } from '@/hooks/useContent';
 
 const Register = ({ clearTimerToScreenTwo, clientsList }) => {
-    const INIT_COUNT = 30;
+    const INIT_COUNT = 70;
     const { count, start, stop, reset } = useCountDown(INIT_COUNT);
     const { setScreenIndex } = useContent();
     //

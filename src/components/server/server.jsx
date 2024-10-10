@@ -2,11 +2,10 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
-import DataList from "@/store/data";
+import DataList from "@/store/data_team";
 import { useContent } from '@/hooks/useContent';
 import Clients from './clients';
 import Main from './main';
-import StarryNight from '../general/bg_starryNight';
 import Leaderboard from './leaderboard';
 import Music from '../general/music';
 import Button from '../general/button';
@@ -23,7 +22,7 @@ const Server = () => {
     const [confirmPlay, setConfirmPlay] = useState([]);
     const timerRef = useRef(null);
     //
-    const puzzleIndexRange = 3;
+    const puzzleIndexRange = 5;
     const [puzzleIndexRangeEnd, setPuzzleIndexRangeEnd] = useState(puzzleIndexRange);
     let pingInterval, pingIndex = 0;
     //
@@ -371,11 +370,11 @@ const Server = () => {
                 </>}
             {screenIndex === 4 && <Leaderboard clientsList={clientsList} />}
 
-            {<div className="flex gap-2 fixed bottom-0 left-0 opacity-5">
+            {/*<div className="flex gap-2 fixed bottom-0 left-0 opacity-5">
                 <Button value='screenIndex' func={() => { setScreenIndex(screenIndex + 1) }} />
                 <Button value='puzzleIndex --' func={() => { setPuzzleIndex(puzzleIndex - 1) }} />
                 <Button value='puzzleIndex ++' func={() => { setPuzzleIndex(puzzleIndex + 1) }} />
-            </div>}
+            </div>*/}
             <BgImages clientsList={clientsList} />
         </div>
     )

@@ -170,7 +170,7 @@ export default function GamePlay({ data }) {
             {
                 data &&
                 <>
-                    <Image className={`m-3 p-3 rounded-3xl object-contain`} src={`/assets/img/` + data.img} alt={data.img} width="500" height="500" />
+                    <Image className={`m-3 p-3 rounded-3xl object-contain`} src={`/assets/img/` + data.img} alt={data.img} width="500" height="500" priority={true} />
                     <Slots valueInSlots={valueInSlots} resetValueInSlot={resetValueInSlot} isAnswerCorrect={isAnswerCorrect} />
                     {keyboardType === 1 ?
                         (<Keyboard ref={keyboardRef} keyboard={data.keyboard} addKeyStrokeInSlots={addKeyStrokeInSlots} hasEmptySlot={hasEmptySlot} />) :

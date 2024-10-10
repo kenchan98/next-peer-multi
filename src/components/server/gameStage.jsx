@@ -36,7 +36,7 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
                 return () => clearTimeout(timer)
             } else {
                 // start the count down to next puzzle
-                reset(5);
+                reset(15);
                 start();
             }
         }
@@ -67,7 +67,7 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
             {
                 data &&
                 (<>
-                    <Image className={`w-[45vh] m-8 rounded-3xl ${animateIn}`} src={`/assets/img/` + data.img} alt={data.img} width={0} height={0} sizes="100vw" />
+                    <Image className={`w-[45vh] m-8 rounded-3xl ${animateIn}`} src={`/assets/img/` + data.img} alt={data.img} width={0} height={0} sizes="100vw" priority={true} />
                     <Slots valueInSlots={valueInSlots} />
                     <div className={`font-[family-name:var(--font-ibm-r)] text-[2.5vw] text-white m-8`}>
                         {timeUp ?

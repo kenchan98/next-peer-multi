@@ -38,7 +38,7 @@ const Login = ({ clientID, func1, func2 }) => {
                 //ref={inputRef}
                 type="text"
                 value={clientID}
-                onChange={(e) => func1(e.target.value)}
+                onChange={func1}
                 placeholder="Please enter your name"
             />
             {!connectButtonPressed ? <Button value="Join game" width='full' func={() => { func2(); }} /> : "Connecting ..."}

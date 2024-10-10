@@ -45,7 +45,7 @@ export default function Slots({ valueInSlots }) {
                 <div
                     key={`slot-${index}`}
                     className={`flex items-center justify-center p-2 
-                        min-w-20 max-w-24 w-auto aspect-square rounded-xl
+                        min-w-16 max-w-24 w-auto aspect-square rounded-xl
                         font-[family-name:var(--font-ibm-m)] text-black text-6xl
                         ${animateIn}
                         ${reveal ? 'bg-game-green' : 'bg-white'}`}
