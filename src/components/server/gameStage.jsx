@@ -17,16 +17,9 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
     // when the count down is 0 then it set
     // puzzleIndex + 1 to the next puzzle
     useEffect(() => {
-        let timer;
         if (count === 0) {
             stop();
-            setAnimateIn('animate-fadeOut');
-            timer = setTimeout(() => {
-                setPuzzleIndex(puzzleIndex + 1);
-            }, 500);
-        }
-        return () => {
-            clearTimeout(timer)
+            setPuzzleIndex(puzzleIndex + 1);
         }
     }, [count]);
     //
@@ -61,10 +54,11 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
             sound_next();
             setValueInSlots(slots);
             // fade in the whole content
-            setAnimateIn('animate-fadeIn');
+            /*setAnimateIn('animate-fadeIn');
             const timer = setTimeout(() => { setAnimateIn('') }, 500);
 
             return () => clearTimeout(timer);
+            */
         }
     }, [data]);
     //

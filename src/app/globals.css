@@ -91,18 +91,6 @@ body {
   animation: fadeIn 0.5s;
 }
 
-@keyframes fadeOut {
-
-  to {
-    opacity: 0;
-  }
-}
-
-.animate-fadeOut {
-  animation: fadeOut 0.5s;
-}
-
-
 .animate-fadeInSlower {
   animation: fadeIn 1s;
 }
