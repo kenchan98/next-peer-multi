@@ -17,9 +17,16 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
     // when the count down is 0 then it set
     // puzzleIndex + 1 to the next puzzle
     useEffect(() => {
+        let timer;
         if (count === 0) {
             stop();
-            setPuzzleIndex(puzzleIndex + 1);
+            setAnimateIn('animate-fadeOut');
+            timer = setTimeout(() => {
+                setPuzzleIndex(puzzleIndex + 1);
+            }, 500);
+        }
+        return () => {
+            clearTimeout(timer)
         }
     }, [count]);
     //
