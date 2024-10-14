@@ -21,7 +21,7 @@ export default function Slots({ valueInSlots, resetValueInSlot, isAnswerCorrect 
             {
                 valueInSlots.map((slot, i) => {
                     const isError = (isAnswerCorrect === false) && (slot.value !== slot.answer);
-                    return <div className={`flex rounded-lg justify-center items-center aspect-square text-black text-xl min-w-8 max-w-12 w-auto
+                    return <div className={`flex rounded-lg justify-center items-center aspect-square text-black text-xl min-w-7 max-w-12 w-auto
                                     ${isError ? styles_incorrect : (isAnswerCorrect ? styles_correct : 'bg-white')}`}
                         key={i}
                         onClick={() => {

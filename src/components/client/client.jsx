@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
 import Login from './login';
 import GamePlay from './gamePlay';
-import DataList from '@/store/data_team';
+import DataList from '@/store/data';
 import { useContent } from '@/hooks/useContent';
 import Top from './top';
 import MessageWait from './message_wait';

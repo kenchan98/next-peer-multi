@@ -13,6 +13,10 @@ export function ContentProvider({ children }) {
     const [timeUp, setTimeUp] = useState(false);
     const [keyboardType, setKeyboardType] = useState(2);
     const [musicActivated, setMusicActivated] = useState(false);
+    const puzzleTimerDuring = 30;
+    const puzzleTimerAfter = 15;
+    const puzzleIndexRange = 5;
+    const waitingTimer = 10;
     //
     //const [puzzleIndexRange] = useState(3);
     //const [puzzleIndexRangeEnd, setPuzzleIndexRangeEnd] = useState(null);
@@ -27,8 +31,8 @@ export function ContentProvider({ children }) {
             timerCount, setTimerCount,
             keyboardType, setKeyboardType,
             musicActivated, setMusicActivated,
-            //puzzleIndexRange,
-            //puzzleIndexRangeEnd, setPuzzleIndexRangeEnd
+            waitingTimer,
+            puzzleTimerDuring, puzzleTimerAfter, puzzleIndexRange
         }}>
             {children}
         </ContentContext.Provider>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
-import DataList from "@/store/data_team";
+import DataList from "@/store/data";
 import { useContent } from '@/hooks/useContent';
 import Clients from './clients';
 import Main from './main';
@@ -20,14 +20,15 @@ const Server = () => {
     const [serverVariable, setServerVariable] = useState('');
     const [userResults, setUserResults] = useState([]);
     const [confirmPlay, setConfirmPlay] = useState([]);
+    const [qrCode, setQrCode] = useState(3)
     const timerRef = useRef(null);
+    const { timerCount, timeUp, setTimeUp, screenIndex, setScreenIndex, puzzleIndex, setPuzzleIndex, puzzleIndexRange } = useContent();
+
     //
-    const puzzleIndexRange = 5;
     const [puzzleIndexRangeEnd, setPuzzleIndexRangeEnd] = useState(puzzleIndexRange);
     let pingInterval, pingIndex = 0;
     //
     //
-    const { timerCount, timeUp, setTimeUp, screenIndex, setScreenIndex, puzzleIndex, setPuzzleIndex } = useContent();
     //
     //
     // for customising server ID before connecting
@@ -108,9 +109,7 @@ const Server = () => {
         // reset for a new round
         if (screenIndex === 1) {
             setTimeUp(false);
-            // since we now have serveral rounds and using the same data set
-            // we dont reset the puzzleIndex to 0 and instead reset the puzzleIndexRangeEnd
-            //setPuzzleIndex(0);
+            // reset the results if users has previously answered
             setUserResults([])
             //
             const list = [...clientsList];
@@ -333,15 +332,14 @@ const Server = () => {
     const setPuzzleIndexRangeInTheRound = () => {
         /*console.log('puzzleIndexRangeEnd : ', puzzleIndexRangeEnd)
         console.log(DataList.length - puzzleIndexRange);
-        console.log('_____________________')
-        */
+        console.log('_____________________')*/
         if (puzzleIndexRangeEnd > DataList.length - 1) {
-            console.log("RESET puzzleIndexRange")
+            console.log("RESET puzzleIndexRange back to initial value")
             // reset puzzleIndex so that it restart from the 1st round
             setPuzzleIndex(0);
             setPuzzleIndexRangeEnd(puzzleIndexRange);
         } else {
-
+            console.log("NEXT batch of puzzles ")
             setPuzzleIndex(puzzleIndex + 1);
             setPuzzleIndexRangeEnd(puzzleIndexRangeEnd + puzzleIndexRange);
         }
@@ -362,6 +360,8 @@ const Server = () => {
                             setPuzzleIndexRangeInTheRound={setPuzzleIndexRangeInTheRound}
                             clientsList={clientsList}
                             clearTimerToScreenTwo={clearTimerToScreenTwo}
+                            setQrCode={setQrCode}
+                            qrCode={qrCode}
                         />
                     </div>
                     <div className='w-1/2'>

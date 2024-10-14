@@ -10,7 +10,7 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
     const [valueInSlots, setValueInSlots] = useState([]);
     const [animateIn, setAnimateIn] = useState('');
     const { count, reset, start, stop } = useCountDown();
-    const { puzzleIndex, setPuzzleIndex, setScreenIndex, timeUp } = useContent();
+    const { puzzleIndex, setPuzzleIndex, setScreenIndex, timeUp, puzzleTimerDuring, puzzleTimerAfter } = useContent();
 
     const [sound_next] = useSound('/assets/sound/next.mp3');
     //
@@ -36,7 +36,7 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
                 return () => clearTimeout(timer)
             } else {
                 // start the count down to next puzzle
-                reset(15);
+                reset(puzzleTimerAfter);
                 start();
             }
         }
@@ -53,14 +53,19 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
             }
             sound_next();
             setValueInSlots(slots);
-            // fade in the whole content
-            /*setAnimateIn('animate-fadeIn');
-            const timer = setTimeout(() => { setAnimateIn('') }, 500);
 
-            return () => clearTimeout(timer);
-            */
         }
     }, [data]);
+    //
+    //
+    const animateFadeInImage = () => {
+        // fade in the whole content
+        setAnimateIn('animate-fadeIn');
+        const timer = setTimeout(() => { setAnimateIn('') }, 500);
+
+        return () => clearTimeout(timer);
+
+    }
     //
     //
     return (
@@ -68,12 +73,12 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
             {
                 data &&
                 (<>
-                    <Image className={`w-[45vh] m-8 rounded-3xl ${animateIn}`} src={`/assets/img/` + data.img} alt={data.img} width={0} height={0} sizes="100vw" priority={true} />
+                    <Image className={`w-[45vh] m-8 rounded-3xl ${animateIn}`} src={`/assets/img/` + data.img} alt={data.img} width={0} height={0} sizes="100vw" priority />
                     <Slots valueInSlots={valueInSlots} />
                     <div className={`font-[family-name:var(--font-ibm-r)] text-[2.5vw] text-white m-8`}>
                         {timeUp ?
-                            ((puzzleIndex === puzzleIndexRangeEnd - 1) ? <></> : (count < 13) ? <div className='animate-fadeIn'>NEXT PUZZLE IN <span className='mx-4'>{count}</span></div> : <></>) :
-                            (<div className='animate-dropIn' style={{ animationDelay: '800ms' }}><Timer init_counter={30} /></div>)
+                            ((puzzleIndex === puzzleIndexRangeEnd - 1) ? <></> : (count < puzzleTimerAfter - 2) ? <div className='animate-fadeIn'>NEXT PUZZLE IN <span className='mx-4'>{count}</span></div> : <></>) :
+                            (<div className='animate-dropIn' style={{ animationDelay: '800ms' }}><Timer init_counter={puzzleTimerDuring} /></div>)
                         }
                     </div>
                 </>)

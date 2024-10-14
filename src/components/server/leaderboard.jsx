@@ -31,7 +31,8 @@ export default function Leaderboard({ clientsList }) {
         totalsList.map((client) => {
             client.total = client.results.length
         });
-        setSortedList([...totalsList].sort((a, b) => b.total - a.total));
+        const top10Sorted = [...totalsList].sort((a, b) => b.total - a.total).slice(0, 10);
+        setSortedList(top10Sorted);
         //
         // create a list for the fastest in each puzzle
         let _list = []

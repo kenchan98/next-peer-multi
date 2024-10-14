@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
 
 const MessageTimeUp = () => {
   const [showText, setShowText] = useState(false);
@@ -36,6 +37,11 @@ const MessageTimeUp = () => {
               UP
             </span>
           </div>
+          <span className="fixed top-0 left-0 flex w-full h-screen justify-center" style={{
+            animation: 'rotate-timer .3s ease-in-out infinite'
+          }}>
+            <Image src="/assets/img/icon_timer.svg" width={80} height={80} alt="icon" />
+          </span>
         </div>
       )}
       <style jsx>{`
@@ -75,6 +81,27 @@ const MessageTimeUp = () => {
             transform: translateX(0);
             opacity: 1;
           }
+        }
+
+      @keyframes rotate-timer {
+         0%{
+            transform: rotate(0deg);
+            transform: translateY(0);
+         }
+         25%{
+            transform: rotate(-5deg);
+         }
+         50%{
+            transform: rotate(0deg);
+            transform: translateY(1%);
+         }
+         75%{
+            transform: rotate(5deg);
+         }
+         100%{
+            transform: rotate(0deg);
+            transform: translateY(0);
+         }
         }
       `}</style>
     </div>

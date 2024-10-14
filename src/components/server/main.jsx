@@ -10,7 +10,8 @@ export default function Main({ isConnected, screenIndex,
     DataList, puzzleIndex,
     puzzleIndexRangeEnd, setPuzzleIndexRangeInTheRound,
     clientsList,
-    clearTimerToScreenTwo
+    clearTimerToScreenTwo,
+    setQrCode, qrCode
 }) {
     return (
         <>
@@ -20,9 +21,10 @@ export default function Main({ isConnected, screenIndex,
                     serverVariable={serverVariable}
                     func1={setServerVariable}
                     func2={updateServerVariable}
+                    setQrCode={setQrCode}
                 />
             )}
-            {screenIndex === 1 && <Register clearTimerToScreenTwo={clearTimerToScreenTwo} clientsList={clientsList} />}
+            {screenIndex === 1 && <Register clearTimerToScreenTwo={clearTimerToScreenTwo} clientsList={clientsList} qrCode={qrCode} />}
             {screenIndex === 2 && <Ready func={setScreenIndexToThree} />}
             {screenIndex === 3 && <GameStage data={DataList[puzzleIndex]} puzzleIndexRangeEnd={puzzleIndexRangeEnd} setPuzzleIndexRangeInTheRound={setPuzzleIndexRangeInTheRound} />}
         </>
