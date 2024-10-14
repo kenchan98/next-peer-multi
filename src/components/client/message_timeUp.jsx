@@ -37,7 +37,7 @@ const MessageTimeUp = () => {
               UP
             </span>
           </div>
-          <span className="fixed top-0 left-0 flex w-full h-screen justify-center my-16" style={{
+          <span className="fixed top-0 left-0 flex w-full h-screen justify-center my-24" style={{
             animation: 'rotate-timer .3s ease-in-out infinite'
           }}>
             <Image src="/assets/img/icon_timer.svg" width={80} height={80} alt="icon" />
