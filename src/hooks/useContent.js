@@ -16,7 +16,7 @@ export function ContentProvider({ children }) {
     const puzzleTimerDuring = 30;
     const puzzleTimerAfter = 15;
     const puzzleIndexRange = 5;
-    const waitingTimer = 10;
+    const waitingTimer = 100;
     //
     //const [puzzleIndexRange] = useState(3);
     //const [puzzleIndexRangeEnd, setPuzzleIndexRangeEnd] = useState(null);
