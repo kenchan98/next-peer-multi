@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
-import DataList from "@/store/data";
+import DataList from "@/store/data_team";
 import { useContent } from '@/hooks/useContent';
 import Clients from './clients';
 import Main from './main';
