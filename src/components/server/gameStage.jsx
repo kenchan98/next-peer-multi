@@ -9,6 +9,7 @@ import { useContent } from '@/hooks/useContent';
 export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRangeInTheRound }) {
     const [valueInSlots, setValueInSlots] = useState([]);
     const [animateIn, setAnimateIn] = useState('');
+    const [showSlots, setShowSlots] = useState(false);
     const { count, reset, start, stop } = useCountDown();
     const { puzzleIndex, setPuzzleIndex, setScreenIndex, timeUp, puzzleTimerDuring, puzzleTimerAfter } = useContent();
 
@@ -20,6 +21,7 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
         if (count === 0) {
             stop();
             setPuzzleIndex(puzzleIndex + 1);
+            setShowSlots(false)
         }
     }, [count]);
     //
@@ -73,8 +75,8 @@ export default function GameStage({ data, puzzleIndexRangeEnd, setPuzzleIndexRan
             {
                 data &&
                 (<>
-                    <Image className={`w-[45vh] m-8 rounded-3xl ${animateIn}`} src={`/assets/img/` + data.img} alt={data.img} width={0} height={0} sizes="100vw" priority />
-                    <Slots valueInSlots={valueInSlots} />
+                    <Image className={`w-[45vh] m-8 rounded-3xl ${animateIn}`} src={`/assets/img/` + data.img} alt={data.img} width={0} height={0} sizes="100vw" priority onLoad={() => setShowSlots(true)} />
+                    {showSlots && <Slots valueInSlots={valueInSlots} />}
                     <div className={`font-[family-name:var(--font-ibm-r)] text-[2.5vw] text-white m-8`}>
                         {timeUp ?
                             ((puzzleIndex === puzzleIndexRangeEnd - 1) ? <></> : (count < puzzleTimerAfter - 2) ? <div className='animate-fadeIn'>NEXT PUZZLE IN <span className='mx-4'>{count}</span></div> : <></>) :

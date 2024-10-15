@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
-import DataList from "@/store/data_team";
+import DataList from "@/store/data";
 import { useContent } from '@/hooks/useContent';
 import Clients from './clients';
 import Main from './main';
@@ -235,18 +235,17 @@ const Server = () => {
 
         peer.on('connection', (conn) => {
             console.log('New client connected:', conn);
-
             conn.on('open', () => {
-                // put all newly joined users into the clientsList
-                // except the remote control (controller)
-                if (conn.peer !== 'controller') {
-                    // Add new client to the list
-                    setClientsList(prevList => {
-                        const newList = [...prevList, { id: conn.peer, results: [] }];
-                        return newList;
+                // Add new client to the list
+                setClientsList(prevList => {
+                    const index = prevList.findIndex(client => client.id === conn.peer);
+                    if (index === -1) {
+                        // Item doesn't exist, add it
+                        return [...prevList, { id: conn.peer, results: [] }];
+                    } else {
+                        return [...prevList];
                     }
-                    );
-                }
+                });
                 // add all joined users including controller into the 'connections'
                 setConnections(prevConnections => ({ ...prevConnections, [conn.peer]: conn }));
             });

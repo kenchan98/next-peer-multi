@@ -49,7 +49,7 @@ export default function Slots({ valueInSlots }) {
                         font-[family-name:var(--font-ibm-m)] text-black text-6xl
                         ${animateIn}
                         ${reveal ? 'bg-game-green' : 'bg-white'}`}
-                    style={{ animationDelay: `${index * 70}ms` }}
+                    style={{ animationDelay: `${(index * 70) + 500}ms` }}
                 >
                     <span className={`${reveal ? 'animate-textPopGlow opacity-100' : 'opacity-0'}`}>{slot.value}</span>
                 </div>

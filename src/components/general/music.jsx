@@ -33,7 +33,7 @@ export default function Music() {
             <div className='w-12 text-white m-8' onClick={() => {
                 setIsPlaying(!isPlaying)
             }}>
-                {isPlaying ? <Volume2 /> : <VolumeX />}
+                {/*isPlaying ? <Volume2 /> : <VolumeX />*/}
             </div>
         </div>
     )

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import PeerConfig from '@/components/peerjs/peerConfig';
 import Login from './login';
 import GamePlay from './gamePlay';
-import DataList from '@/store/data_team';
+import DataList from '@/store/data';
 import { useContent } from '@/hooks/useContent';
 import Top from './top';
 import MessageWait from './message_wait';
@@ -158,7 +158,7 @@ const Client = () => {
                 console.log('Received data:', data);
                 //
                 if (data.type === 'from-server-pinging') {
-                    if (data.data.screenIndex > 1) setScreenIndex(data.data.screenIndex)
+                    if (data.data.screenIndex > 0) setScreenIndex(data.data.screenIndex)
                     if (data.data.puzzleIndex) setPuzzleIndex(data.data.puzzleIndex)
                     setTimeUp(data.data.timeUp);
                     // detect if the server is still alive
@@ -186,17 +186,20 @@ const Client = () => {
             });
 
             conn.on('close', () => {
-                alert('Lost connection to server');
-                location.reload();
+                //alert('____ Lost connection to server');
             });
         });
 
         peer.on('error', (error) => {
-            alert(error);
-            location.reload();
+            //alert(error);
             //alert('Failed to connect. The ID might be taken or there was a network error.');
-            setIsConnecting(false);
+            //setIsConnecting(false);
         });
+
+        peer.on('disconnected', () => {
+            //alert('disconnected!!')
+            peer.reconnect();
+        })
 
         // 
         setIsConnecting(true);

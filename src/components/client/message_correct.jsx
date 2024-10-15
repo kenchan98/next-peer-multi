@@ -29,7 +29,7 @@ const MessageCorrect = () => {
                         >
                             CORRECT!
                             <span className="flex w-full justify-center my-16" style={{
-                                animation: 'float-up-down 5s ease-in-out infinite'
+                                animation: 'pulsate 1s ease-in-out infinite'
                             }}>
                                 <Image src="/assets/img/icon_cup.svg" width={80} height={80} alt="icon" />
                             </span>
@@ -72,6 +72,18 @@ const MessageCorrect = () => {
          }
          100%{
             transform: translateY(-20%);
+         }
+        }
+
+        @keyframes pulsate {
+         0%{
+            transform: scale(1.2);
+         }
+         50%{
+            transform: scale(0.7);
+         }
+         100%{
+            transform: scale(1.2);
          }
         }
       `}</style>

@@ -42,7 +42,7 @@ const BgImages = ({ clientsList }) => {
                 <Image className={(clientsList.length > 0) ? 'animate-fadeTo40' : ''} src={imgUrl} width={0} height={0} alt="logo" sizes='100vw' style={{ width: 'auto', height: '100%' }} priority={true} />
             </div>)}
             {screenIndex === 3 && (<div className={`fixed right-0 h-full`}>
-                <Image className='opacity-80' src='/assets/img/bg.jpg' width={0} height={0} alt="logo" sizes='100vw' style={{ width: 'auto', height: '100%' }} priority={true} />
+                <Image src='/assets/img/bg.jpg' width={0} height={0} alt="logo" sizes='100vw' style={{ width: 'auto', height: '100%' }} priority={true} />
             </div>)}
         </div>
     )

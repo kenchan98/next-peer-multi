@@ -14,9 +14,9 @@ export function ContentProvider({ children }) {
     const [keyboardType, setKeyboardType] = useState(2);
     const [musicActivated, setMusicActivated] = useState(false);
     const puzzleTimerDuring = 30;
-    const puzzleTimerAfter = 15;
+    const puzzleTimerAfter = 10;
     const puzzleIndexRange = 5;
-    const waitingTimer = 100;
+    const waitingTimer = 70;
     //
     //const [puzzleIndexRange] = useState(3);
     //const [puzzleIndexRangeEnd, setPuzzleIndexRangeEnd] = useState(null);

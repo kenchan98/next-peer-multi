@@ -100,7 +100,7 @@ export default function Leaderboard({ clientsList }) {
             </div>
             <div className='w-1/2 m-8 mx-16'>
                 <div className='flex w-auto items-center m-4 '>
-                    <div className='flex items-center w-full'><Image className='w-full' src='/assets/img/fastest.svg' width='40' height='40' alt='logo' /></div>
+                    <div className='flex items-center w-full'><Image className='w-full' src='/assets/img/quickest.svg' width='40' height='40' alt='logo' /></div>
                 </div>
                 <div className='flex flex-col w-full '>
                     {
